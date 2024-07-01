@@ -28,6 +28,7 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 
 public class InitStands {
+
     @SuppressWarnings("unchecked")
     public static final DeferredRegister<Action<?>> ACTIONS = DeferredRegister.create(
             (Class<Action<?>>) ((Class<?>) Action.class), RotpKingCrimsonAddon.MOD_ID);
@@ -93,7 +94,9 @@ public class InitStands {
                     .staminaCost(200)
                     .cooldown(60)
                     .standSound(InitSounds.KINGCRIMSON_TIMESKIP)
-                    .resolveLevelToUnlock(2)));
+                    .resolveLevelToUnlock(2)
+                    .standAutoSummonMode(StandEntityAction.AutoSummonMode.OFF_ARM) // need to remove it :D
+            ));
 
 
     public static final RegistryObject<StandEntityAction> KINGCRIMSON_TIMEERASE = ACTIONS.register("kingcrimson_timeerase",
@@ -115,12 +118,14 @@ public class InitStands {
                     .cooldown(200)
                     .resolveLevelToUnlock(1)
                     .shout(InitSounds.DIAVOLO_EPITAPH)
-                    .standSound(InitSounds.KINGCRIMSON_EPITAPH)));
+                    .standSound(InitSounds.KINGCRIMSON_EPITAPH)
+                    .standAutoSummonMode(StandEntityAction.AutoSummonMode.ARMS))
+    );
     public static final EntityStandRegistryObject<EntityStandType<StandStats>, StandEntityType<KingCrimsonEntity>> STAND_KINGCRIMSON =
             new EntityStandRegistryObject<>("kingcrimson",
                     STANDS,
                     () -> new EntityStandType.Builder<>()
-                            .color(0xDC143C)
+                            .color(0xCF2F50)
                             .storyPartName(ModStandsInit.PART_5_NAME)
                             .leftClickHotbar(
                                     KINGCRIMSON_PUNCH.get(),
@@ -135,16 +140,16 @@ public class InitStands {
 
                             )
                             .defaultStats(StandStats.class, new StandStats.Builder()
-                                    .tier(6)
-                                    .power(16.0)
-                                    .speed(16.0)
-                                    .range(2, 2.5)
-                                    .durability(8)
-                                    .precision(16.0)
+                                    .power(14.0)
+                                    .speed(14.0)
+                                    .range(2, 3)
+                                    .durability(2)
+                                    .precision(14.0)
                                     .randomWeight(1)
                             )
                             .addSummonShout(InitSounds.DIAVOLO_KINGCRIMSON)
                             .addOst(InitSounds.KINGCRIMSON_OST)
+                            .addAttackerResolveMultTier(1)
                             .build(),
 
                     InitEntities.ENTITIES,

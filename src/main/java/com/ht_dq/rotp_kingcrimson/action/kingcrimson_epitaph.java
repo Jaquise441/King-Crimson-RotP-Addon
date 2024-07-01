@@ -31,8 +31,8 @@ import java.util.UUID;
 public class kingcrimson_epitaph extends StandEntityAction {
 
 
-    //Todo:
-    // Balls
+    // Todo:
+    // - Add Epitaph Balls
 
 
     private static final int EFFECT_DURATION = 200;

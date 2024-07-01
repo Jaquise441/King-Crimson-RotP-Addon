@@ -39,16 +39,7 @@ public class kingcrimson_chop extends StandEntityHeavyAttack {
         }
 
         public static boolean isUndead(LivingEntity entity) {
-            return entity.getType() == EntityType.ZOMBIE ||
-                    entity.getType() == EntityType.SKELETON ||
-                    entity.getType() == EntityType.SKELETON_HORSE ||
-                    entity.getType() == EntityType.STRAY ||
-                    entity.getType() == EntityType.HUSK ||
-                    entity.getType() == EntityType.DROWNED ||
-                    entity.getType() == EntityType.ZOMBIE_VILLAGER ||
-                    entity.getType() == EntityType.ZOMBIE_HORSE ||
-                    entity.getType() == EntityType.ZOMBIFIED_PIGLIN ||
-                    entity.getType() == EntityType.ZOGLIN;
+            return !entity.isDeadOrDying();
         }
 
         public static boolean isWitherResistant(LivingEntity entity) {

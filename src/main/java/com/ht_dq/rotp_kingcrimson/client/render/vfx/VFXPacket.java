@@ -30,9 +30,10 @@ public class VFXPacket {
         context.enqueueWork(() -> {
             if (msg.start) {
                 InitVFX.startVFXClient(msg.playerUUID);
-            } else {
-                InitVFX.stopVFXClient(msg.playerUUID);
             }
+//            } else {
+//                InitVFX.stopVFXClient(msg.playerUUID);
+//            }
         });
         context.setPacketHandled(true);
     }
