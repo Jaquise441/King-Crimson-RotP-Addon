@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -19,11 +18,11 @@ public class InitVFX {
 
     @SubscribeEvent
     public static void onRenderOverlay(RenderGameOverlayEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            Minecraft mc = Minecraft.getInstance();
             if (mc.player != null && TimeSkipHandler.isEffectActive(mc.player)) {
                 int time = TimeSkipHandler.getRemainingTime(mc.player);
-                ResourceLocation texture = TimeSkipHandler.getTextureForTime(time);
+                ResourceLocation texture = getTextureForTime(time);
                 int screenWidth = event.getWindow().getGuiScaledWidth();
                 int screenHeight = event.getWindow().getGuiScaledHeight();
 
@@ -37,10 +36,9 @@ public class InitVFX {
     }
 
 
-    @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            TimeSkipHandler.tick();
-        }
+    public static ResourceLocation getTextureForTime(int time) {
+        return new ResourceLocation(RotpKingCrimsonAddon.MOD_ID, "textures/timeskip/time_skip" + time + ".png");
     }
+
+
 }

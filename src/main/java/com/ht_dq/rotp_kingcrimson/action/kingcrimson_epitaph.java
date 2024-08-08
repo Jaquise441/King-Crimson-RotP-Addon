@@ -6,9 +6,9 @@ import com.github.standobyte.jojo.action.stand.IHasStandPunch;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.init.InitStands;
+import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -126,7 +126,7 @@ public class kingcrimson_epitaph extends StandEntityAction {
 
             World world = player.level;
 
-            TimeSkipHandler.startEffect(player, true);
+            TimeSkipHandler.startVFX(player,true);
 
             MinecraftForge.EVENT_BUS.unregister(this);
         }

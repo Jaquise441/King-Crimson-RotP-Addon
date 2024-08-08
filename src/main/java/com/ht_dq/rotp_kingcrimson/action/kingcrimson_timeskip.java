@@ -4,8 +4,8 @@ import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
+import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
@@ -49,7 +49,7 @@ public class kingcrimson_timeskip extends StandEntityAction {
                     player.addEffect(new EffectInstance(Effects.WEAKNESS, MAX_DURATION, 9, false, false));
 
 
-                    TimeSkipHandler.startEffect(player, true);
+                    TimeSkipHandler.startVFX(player,true);
                 }
 
                 standEntity.getUser().addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, MAX_DURATION, 4, false, false));

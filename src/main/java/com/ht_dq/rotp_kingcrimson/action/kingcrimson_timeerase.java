@@ -5,8 +5,9 @@ import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
+import com.github.standobyte.jojo.util.mc.MCUtil;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
+import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
@@ -59,7 +60,7 @@ public class kingcrimson_timeerase extends StandEntityAction {
                 MinecraftForge.EVENT_BUS.register(new TimeEraseHandler(player.getUUID(), standEntity, userPower, task));
                 timeEraseActive = true;
                 playSound(player, InitSounds.TIME_ERASE_START.get(), true);
-                TimeSkipHandler.startEffect(player, false);
+                TimeSkipHandler.startVFX(player,false);
             }
         }
     }
@@ -73,11 +74,10 @@ public class kingcrimson_timeerase extends StandEntityAction {
             removeMarkers((ServerWorld) world);
             if (timeEraseActive) {
                 playSound(player, InitSounds.TIME_ERASE_END.get(), false);
-                stopSound(player, InitSounds.TIME_ERASE_START.get());
+                MCUtil.runCommand(player,"/stopsound @s player rotp_kingcrimson:time_erase_start");
                 timeEraseActive = false;
                 DelayedTaskScheduler.stopRepeating();
-                TimeSkipHandler.startEffect(player, true);
-
+                TimeSkipHandler.startVFX(player,true);
 
             }
         }
@@ -228,14 +228,12 @@ public class kingcrimson_timeerase extends StandEntityAction {
 
     public static class TimeEraseHandler {
         private final UUID playerUUID;
-        private final StandEntity standEntity;
         private final IStandPower userPower;
         private final StandEntityTask task;
         private boolean isUsingItem = true;
 
         public TimeEraseHandler(UUID playerUUID, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
             this.playerUUID = playerUUID;
-            this.standEntity = standEntity;
             this.userPower = userPower;
             this.task = task;
         }

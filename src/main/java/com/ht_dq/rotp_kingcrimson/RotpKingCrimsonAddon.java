@@ -1,5 +1,6 @@
 package com.ht_dq.rotp_kingcrimson;
 
+import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +25,8 @@ public class RotpKingCrimsonAddon {
         InitSounds.SOUNDS.register(modEventBus);
         InitStands.ACTIONS.register(modEventBus);
         InitStands.STANDS.register(modEventBus);
+
+        AddonPackets.init();
     }
 
     public static Logger getLogger() {
