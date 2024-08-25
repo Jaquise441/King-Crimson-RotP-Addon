@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.7",
+  "package": "com.ht_dq.rotp_kingcrimson.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "WorldRendererMixin"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

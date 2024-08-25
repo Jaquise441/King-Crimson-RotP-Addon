@@ -1,0 +1,83 @@
+{
+  "diavolo_kingcrimson": {
+    "subtitle": "King Crimson",
+    "sounds": [ "rotp_kingcrimson:stand_user/diavolo_kingcrimson", "rotp_kingcrimson:stand_user/diavolo_kingcrimson2" ]
+  },
+  "king_crimson_summon": {
+    "subtitle": "King Crimson Summon",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_summon", "rotp_kingcrimson:stand/kingcrimson_summon2" ]
+  },
+  "king_crimson_unsummon": {
+    "subtitle": "King Crimson Unsummon",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_unsummon" ]
+  },
+  "kingcrimson_punch": {
+    "subtitle": "Hit",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_punch" ]
+  },
+  "diavolo_combofinisher": {
+    "subtitle": "Take This!",
+    "sounds": [ "rotp_kingcrimson:stand_user/diavolo_combofinisher" ]
+  },
+  "king_crimson_heavypunch": {
+    "subtitle": "Heavy Hit",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_heavy_punch" ]
+  },
+  "diavolo_barrage": {
+    "subtitle": "You have genuinely angered me!",
+    "sounds": [ "rotp_kingcrimson:stand_user/diavolo_barrage", "rotp_kingcrimson:stand_user/diavolo_barrage2" ]
+  },
+  "king_crimson_barragepunch": {
+    "subtitle": "Hit",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_barragepunch" ]
+  },
+  "diavolo_heavypunch": {
+    "subtitle": "You're Finished!",
+    "sounds": [ "rotp_kingcrimson:stand_user/diavolo_heavypunch", "rotp_kingcrimson:stand_user/diavolo_heavypunch2" ]
+  },
+  "diavolo_punch": {
+    "subtitle": "Hmph!",
+    "sounds": [ "rotp_kingcrimson:stand_user/diavolo_punch" ]
+  },
+  "diavolo_chop": {
+    "subtitle": "No witnesses",
+    "sounds": [ "rotp_kingcrimson:stand_user/diavolo_chop" ]
+  },
+  "kingcrimson_chop": {
+    "subtitle": "No witnesses",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_chop" ]
+  },
+  "kingcrimson_impale": {
+    "subtitle": "Your life...has come to an end.",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_impale" ]
+  },
+  "time_erase_start": {
+    "subtitle": "Time Erase",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_timeerasure1", "rotp_kingcrimson:stand/kingcrimson_timeerasure2", "rotp_kingcrimson:stand/kingcrimson_timeerasure3" ]
+  },
+  "time_erase_end": {
+    "subtitle": "Time Resume",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_timeresume2", "rotp_kingcrimson:stand/kingcrimson_timeresume3" ]
+  },
+  "kingcrimson_epitaph": {
+    "subtitle": "Epitaph activation",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_epitaph3", "rotp_kingcrimson:stand/kingcrimson_epitaph2" ]
+  },
+  "diavolo_epitaph": {
+    "subtitle": "Epitaph!",
+    "sounds": [ "rotp_kingcrimson:stand_user/diavolo_epitaph2" ]
+  },
+  "kingcrimson_timeerase": {
+    "subtitle": "King Crimson!",
+    "sounds": [ "rotp_kingcrimson:stand/diavolo_timeerasure2" ]
+  },
+  "epitaph_timeskip": {
+    "subtitle": "I skipped over 0.5 seconds!",
+    "sounds": [ "rotp_kingcrimson:stand/epitaph_timeskip" ]
+  },
+  "kingcrimson_timeskip": {
+    "subtitle": "I skipped over 0.5 seconds!",
+    "sounds": [ "rotp_kingcrimson:stand/kingcrimson_timeskip" ]
+
+  }
+}
