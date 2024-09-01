@@ -5,17 +5,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-import com.github.standobyte.jojo.init.ModStatusEffects;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.TemporaryDimensionEffects.DimensionEffect;
-
 import com.github.standobyte.jojo.init.ModStatusEffects;
+import com.github.standobyte.jojo.power.impl.stand.IStandPower;
+import com.ht_dq.rotp_kingcrimson.client.render.vfx.TemporaryDimensionEffects.DimensionEffect;
+import com.ht_dq.rotp_kingcrimson.init.InitStands;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.potion.Effects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -106,7 +106,10 @@ public class ClientEventHandler2 {
     
     public static boolean isErasingTime() {
         Minecraft mc = Minecraft.getInstance();
-        return mc.player != null && mc.player.hasEffect(Effects.LUCK) /*for testing purposes*/;
+        return mc.player != null
+        		&& mc.player.hasEffect(ModStatusEffects.FULL_INVISIBILITY.get()) && mc.player.abilities.invulnerable // works for now
+        		&& IStandPower.getStandPowerOptional(mc.player).map(power -> 
+        		power.getType() == InitStands.STAND_KINGCRIMSON.getStandType()).orElse(false);
     }
     
 }
