@@ -64,7 +64,7 @@ public class kingcrimson_chop extends StandEntityHeavyAttack {
                 LivingEntity livingTarget = (LivingEntity) target;
                 ServerWorld serverWorld = (ServerWorld) stand.level;
 
-                livingTarget.addEffect(BLEEDING_EFFECT);
+                livingTarget.addEffect(new EffectInstance(BLEEDING_EFFECT)); // makes a deep copy of the static EffectInstance object
 
                 applyEffectsImmediately(livingTarget);
             }

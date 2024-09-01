@@ -28,11 +28,15 @@ public class VFXPlayerTick {
         ctx.get().enqueueWork(() -> {
             Entity entity = com.github.standobyte.jojo.client.ClientUtil.getEntityById(msg.entityId);
             if (entity instanceof PlayerEntity) {
-                if(TimeSkipHandler.timer.containsKey((PlayerEntity) entity)){
-                    if(TimeSkipHandler.timer.get((PlayerEntity) entity) <=0) TimeSkipHandler.timer.remove((PlayerEntity) entity);
-                    TimeSkipHandler.timer.replace((PlayerEntity) entity, TimeSkipHandler.timer.get((PlayerEntity) entity)-1);
+            	PlayerEntity player = (PlayerEntity) entity;
+                if (TimeSkipHandler.timer.containsKey(entity)){
+                	Integer timerValue = TimeSkipHandler.timer.get(entity);
+                    if (timerValue <= 0) {
+                    	TimeSkipHandler.timer.remove(entity);
+                    } else {
+                        TimeSkipHandler.timer.put(player, timerValue - 1);
+                    }
                 }
-
             }
         });
         ctx.get().setPacketHandled(true);

@@ -71,8 +71,10 @@ public class kingcrimson_timeerase extends StandEntityAction {
         PlayerEntity player = (PlayerEntity) standEntity.getUser();
         if (player != null) {
             applyEffects(player, standEntity, false);
-            restoreEntityPositions((ServerWorld) world);
-            removeMarkers((ServerWorld) world);
+            if (!world.isClientSide()) {
+	            restoreEntityPositions((ServerWorld) world);
+	            removeMarkers((ServerWorld) world);
+            }
             if (timeEraseActive) {
                 playSound(player, InitSounds.TIME_ERASE_END.get(), false);
                 stopSound(player, InitSounds.TIME_ERASE_START.get());
