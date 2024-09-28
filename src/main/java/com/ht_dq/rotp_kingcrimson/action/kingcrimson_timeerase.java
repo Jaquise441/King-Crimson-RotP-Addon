@@ -82,7 +82,12 @@ public class kingcrimson_timeerase extends StandEntityAction {
                 DelayedTaskScheduler.stopRepeating();
                 TimeSkipHandler.startVFX(player, true);
 
-
+		List<LivingEntity> list = MCUtil.entitiesAround(LivingEntity.class, standEntity,standEntity.getMaxEffectiveRange()*4,false, EntityPredicates.ENTITY_STILL_ALIVE);
+                    if(!list.isEmpty()){
+                        list.forEach(livingEntity -> {
+                            IStandPower.getStandPowerOptional(livingEntity).ifPresent(power -> power.setLeapCooldown(40));
+                        });
+                    }
             }
         }
     }
