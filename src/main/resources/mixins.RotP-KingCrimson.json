@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.7",
+  "package": "com.ht_dq.rotp_kingcrimson.mixin",
+  "refmap": "mixins.RotP-KingCrimson.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "WorldRendererMixin",
+    "TileEntityRendererDispatcherMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
