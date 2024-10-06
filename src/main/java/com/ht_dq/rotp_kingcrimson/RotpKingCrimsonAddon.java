@@ -1,5 +1,6 @@
 package com.ht_dq.rotp_kingcrimson;
 
+import com.ht_dq.rotp_kingcrimson.capability.CapabilityHandler;
 import com.ht_dq.rotp_kingcrimson.init.InitEffects;
 import com.ht_dq.rotp_kingcrimson.init.InitEntities;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
@@ -34,6 +35,7 @@ public class RotpKingCrimsonAddon {
 
     private void clientSetup(final FMLClientSetupEvent event) {
         com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler.registerClientSideEvents();
+        CapabilityHandler.registerCapabilities();
     }
 
     public static Logger getLogger() {

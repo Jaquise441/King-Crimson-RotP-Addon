@@ -1,15 +1,19 @@
 {
   "entity.rotp_kingcrimson.kingcrimson": "King Crimson",
   "stand.rotp_kingcrimson.kingcrimson": "King Crimson",
+
   "action.rotp_kingcrimson.kingcrimson_punch": "Удар",
   "action.rotp_kingcrimson.kingcrimson_heavy_punch": "Тяжёлый удар",
   "action.rotp_kingcrimson.kingcrimson_groundpunch": "Удар по земле",
   "action.rotp_kingcrimson.kingcrimson_barrage": "Шквал ударов",
   "action.rotp_kingcrimson.kingcrimson_chop": "Рубящая атака",
   "action.rotp_kingcrimson.kingcrimson_impale": "Пронзающий удар",
+  
   "action.rotp_kingcrimson.kingcrimson_block": "Блокирование",
   "action.rotp_kingcrimson.kingcrimson_timeskip": "Вырезание Времени",
   "action.rotp_kingcrimson.kingcrimson_epitaph": "Эпитафия",
   "action.rotp_kingcrimson.kingcrimson_timeerase": "Стирание Времени",
+  "action.rotp_kingcrimson.kingcrimson_conceal_identity": "Скрытие Имени",
+
   "rotp_kingcrimson.subtitle.kingcrimson_name": "\"King Crimson\""
 }

@@ -12,7 +12,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.world.server.ServerWorld;
 
 public class KingCrimsonImpale extends StandEntityHeavyAttack {
     public static final StandPose IMPALE = new StandPose("kingcrimson_impale");
@@ -45,7 +44,6 @@ public class KingCrimsonImpale extends StandEntityHeavyAttack {
 
             if (hurt && target instanceof LivingEntity) {
                 LivingEntity livingTarget = (LivingEntity) target;
-                ServerWorld serverWorld = (ServerWorld) stand.level;
 
                 livingTarget.addEffect(new EffectInstance(InitEffects.BLEEDING.get(), 120, 1, false, false));
                 livingTarget.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 120, 3, false, false));

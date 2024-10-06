@@ -34,26 +34,6 @@ public class InitVFX {
             }
         }
     }
-    @SubscribeEvent
-    public static void onRenderOverlayEpitaph(RenderGameOverlayEvent.Post event) {
-        Minecraft mc = Minecraft.getInstance();
-        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-            if (mc.player != null && IStandPower.getStandPowerOptional(mc.player).isPresent()) {
-                IStandPower standPower = IStandPower.getStandPowerOptional(mc.player).resolve().get();
-                if (standPower.getType() == AddonStands.KINGCRIMSON.getStandType() && standPower.getHeldAction() == InitStands.KINGCRIMSON_EPITAPH.get()) {
-                    ResourceLocation texture = getTextureForEptiaphTime();
-                    int screenWidth = event.getWindow().getGuiScaledWidth();
-                    int screenHeight = event.getWindow().getGuiScaledHeight();
-
-                    TextureManager textureManager = mc.getTextureManager();
-                    textureManager.bind(texture);
-
-                    MatrixStack matrixStack = event.getMatrixStack();
-                    AbstractGui.blit(matrixStack, 0, 0, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
-                }
-            }
-        }
-    }
 
     public static ResourceLocation getTextureForRemainingTime(long remainingTime) {
         int frameDuration = 23;

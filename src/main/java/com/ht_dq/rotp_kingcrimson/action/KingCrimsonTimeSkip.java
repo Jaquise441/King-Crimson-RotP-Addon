@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber

@@ -12,7 +12,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.world.server.ServerWorld;
 
 public class KingCrimsonChop extends StandEntityHeavyAttack {
     public static final StandPose CHOP = new StandPose("kingcrimson_chop");
@@ -45,7 +44,6 @@ public class KingCrimsonChop extends StandEntityHeavyAttack {
 
             if (hurt && target instanceof LivingEntity) {
                 LivingEntity livingTarget = (LivingEntity) target;
-                ServerWorld serverWorld = (ServerWorld) stand.level;
 
                 livingTarget.addEffect(new EffectInstance(InitEffects.BLEEDING.get(), 80, 1, false, false));
                 livingTarget.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 80, 3, false, false));

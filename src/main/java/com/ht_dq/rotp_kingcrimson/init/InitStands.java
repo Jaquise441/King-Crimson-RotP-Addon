@@ -112,6 +112,15 @@ public class InitStands {
                     .resolveLevelToUnlock(1)
                     .shout(InitSounds.DIAVOLO_EPITAPH)
                     .standSound(InitSounds.KINGCRIMSON_EPITAPH)));
+
+
+    public static final RegistryObject<StandEntityAction> KINGCRIMSON_CONCEAL_IDENTITY = ACTIONS.register("kingcrimson_conceal_identity",
+            () -> new KingCrimsonConcealIdentity(new StandEntityAction.Builder()
+                    .staminaCost(100)
+                    .cooldown(60)
+                    .resolveLevelToUnlock(4)
+                    .partsRequired(StandPart.ARMS)));
+
     public static final EntityStandRegistryObject<EntityStandType<StandStats>, StandEntityType<KingCrimsonEntity>> STAND_KINGCRIMSON =
             new EntityStandRegistryObject<>("kingcrimson",
                     STANDS,
@@ -127,7 +136,8 @@ public class InitStands {
                                     KINGCRIMSON_BLOCK.get(),
                                     KINGCRIMSON_EPITAPH.get(),
                                     KINGCRIMSON_TIMESKIP.get(),
-                                    KINGCRIMSON_TIMEERASE.get()
+                                    KINGCRIMSON_TIMEERASE.get(),
+                                    KINGCRIMSON_CONCEAL_IDENTITY.get()
 
                             )
                             .defaultStats(StandStats.class, new StandStats.Builder()

@@ -59,13 +59,10 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
     private final Map<Entity, Vector3d> entityPositions = new HashMap<>();
     private final Set<ArmorStandEntity> markers = new HashSet<>();
-    private boolean timeEraseActive = false;
     private static boolean isTimeEraseActive = false;
 
     private final Map<Entity, AfterimageEntity> afterimages = new HashMap<>();
     private final Map<Entity, AfterimageEntity> stationaryAfterimages = new HashMap<>();
-    private KingCrimsonDimensionChangeHandler dimensionChangeHandler;
-
     private final Map<Entity, Boolean> originalPiglinAggression = new HashMap<>();
 
     public KingCrimsonTimeErase(Builder builder) {
@@ -89,7 +86,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
         if (!world.isClientSide()) {
             ServerPlayerEntity player = (ServerPlayerEntity) standEntity.getUser();
             if (player != null) {
-                dimensionChangeHandler = new KingCrimsonDimensionChangeHandler(player);
+                new KingCrimsonDimensionChangeHandler(player);
                 isTimeEraseActive = true;
                 UUID playerId = player.getUUID();
                 playerTimeEraseActive.put(playerId, true);
@@ -102,7 +99,6 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                 createAfterimages(player);
                 disablePiglinAggression(player);
                 MinecraftForge.EVENT_BUS.register(new TimeEraseHandler(player.getUUID(), standEntity, userPower, task));
-                timeEraseActive = true;
                 playSound(player, InitSounds.TIME_ERASE_START.get(), true);
                 TimeSkipHandler.startVFX(player, false);
             }
