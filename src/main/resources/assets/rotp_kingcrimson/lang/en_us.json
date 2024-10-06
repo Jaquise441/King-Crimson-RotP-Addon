@@ -1,0 +1,15 @@
+{
+  "entity.rotp_kingcrimson.kingcrimson": "King Crimson",
+  "stand.rotp_kingcrimson.kingcrimson": "King Crimson",
+  "action.rotp_kingcrimson.kingcrimson_punch": "Punch",
+  "action.rotp_kingcrimson.kingcrimson_heavy_punch": "Heavy Punch",
+  "action.rotp_kingcrimson.kingcrimson_groundpunch": "Ground Punch",
+  "action.rotp_kingcrimson.kingcrimson_barrage": "Barrage",
+  "action.rotp_kingcrimson.kingcrimson_chop": "Chop",
+  "action.rotp_kingcrimson.kingcrimson_impale": "Impale",
+  "action.rotp_kingcrimson.kingcrimson_block": "Block",
+  "action.rotp_kingcrimson.kingcrimson_timeskip": "Time Skip",
+  "action.rotp_kingcrimson.kingcrimson_epitaph": "Epitaph",
+  "action.rotp_kingcrimson.kingcrimson_timeerase": "Time Erase",
+  "rotp_kingcrimson.subtitle.kingcrimson_name": "\"King Crimson\""
+}
