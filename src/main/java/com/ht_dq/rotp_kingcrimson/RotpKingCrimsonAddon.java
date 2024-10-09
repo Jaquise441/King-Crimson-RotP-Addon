@@ -1,18 +1,20 @@
 package com.ht_dq.rotp_kingcrimson;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.ht_dq.rotp_kingcrimson.capability.CapabilityHandler;
+import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
 import com.ht_dq.rotp_kingcrimson.init.InitEffects;
 import com.ht_dq.rotp_kingcrimson.init.InitEntities;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.init.InitStands;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
-import net.minecraftforge.api.distmarker.Dist;
+
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @Mod(RotpKingCrimsonAddon.MOD_ID)
 public class RotpKingCrimsonAddon {
@@ -34,7 +36,7 @@ public class RotpKingCrimsonAddon {
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
-        com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler.registerClientSideEvents();
+        TimeSkipHandler.registerClientSideEvents();
         CapabilityHandler.registerCapabilities();
     }
 
