@@ -17,5 +17,11 @@ public class WorldRendererMixin {
             ci.cancel();
         }
     }
+    @Inject(method = "renderSnowAndRain", at = @At("HEAD"), cancellable = true)
+    private void jojoTimeEraseCancelWeatherRender(CallbackInfo ci) {
+        if (ClientEventHandler2.isErasingTime()) {
+            ci.cancel();
+        }
+    }
 
 }
