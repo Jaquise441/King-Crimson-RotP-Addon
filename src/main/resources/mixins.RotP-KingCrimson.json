@@ -9,7 +9,8 @@
   ],
   "client": [
     "WorldRendererMixin",
-    "TileEntityRendererDispatcherMixin"
+    "TileEntityRendererDispatcherMixin",
+    "TexturedParticleMixin"
   ],
   "injectors": {
     "defaultRequire": 1
