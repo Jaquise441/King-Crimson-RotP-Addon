@@ -38,8 +38,8 @@ public class KingCrimsonTimeSkip extends StandEntityAction {
                 .filter(entity -> entity instanceof PlayerEntity || entity instanceof LivingEntity)
                 .collect(Collectors.toList());
 
-        for (Entity entity : entities) {
-            for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 200; i++) {
+            for (Entity entity : entities) {
                 entity.tick();
             }
         }
