@@ -51,6 +51,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
     private static final int MAX_DURATION = 200;
     private static final double RADIUS = 192.0;
+    // FIXME if a player disconnects/crashes during their time erase, they won't be able to use it until the server restarts
     public static final Map<UUID, Boolean> playerTimeEraseActive = new HashMap<>();
     private final Map<UUID, KingCrimsonDimensionChangeHandler> dimensionChangeHandlers = new HashMap<>();
     private static boolean isTimeEraseActive = false;
@@ -67,11 +68,11 @@ public class KingCrimsonTimeErase extends StandEntityAction {
     protected ActionConditionResult checkSpecificConditions(LivingEntity user, IStandPower power, ActionTarget target) {
         AtomicBoolean activation = new AtomicBoolean(true);
         playerTimeEraseActive.keySet().forEach(entry ->{
-            if (entry != user.getUUID()){
+            if (!entry.equals(user.getUUID())){
                 activation.set(false);
             }
         });
-        return activation.get() ?ActionConditionResult.POSITIVE:ActionConditionResult.NEGATIVE;
+        return ActionConditionResult.noMessage(activation.get());
     }
 
     @Override
@@ -270,7 +271,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
     private static void stopSound(PlayerEntity player, SoundEvent sound) {
         if (player instanceof ServerPlayerEntity) {
-            ((ServerPlayerEntity) player).connection.send(new SStopSoundPacket(sound.getLocation(), SoundCategory.PLAYERS));
+            ((ServerPlayerEntity) player).connection.send(new SStopSoundPacket(sound.getRegistryName(), SoundCategory.PLAYERS));
         }
     }
 
