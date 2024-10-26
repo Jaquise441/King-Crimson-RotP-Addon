@@ -1,19 +1,19 @@
 package com.ht_dq.rotp_kingcrimson.client.render.vfx;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import com.ht_dq.rotp_kingcrimson.network.server.TimerPutPacket;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = RotpKingCrimsonAddon.MOD_ID, value = Dist.CLIENT)
 public class TimeSkipHandler {
@@ -65,8 +65,5 @@ public class TimeSkipHandler {
         long elapsedTime = currentTime - startTime;
         return Math.max(0, EFFECT_DURATION - elapsedTime);
     }
-
-    public static void registerClientSideEvents() {
-        MinecraftForge.EVENT_BUS.register(com.ht_dq.rotp_kingcrimson.init.InitVFX.class);
-    }
+    
 }

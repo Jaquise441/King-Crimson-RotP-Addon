@@ -2,7 +2,7 @@ package com.ht_dq.rotp_kingcrimson.client;
 
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.renderer.stand.KingCrimsonRenderer;
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.ClientEventHandler2;
+import com.ht_dq.rotp_kingcrimson.client.render.vfx.ClientEventHandler;
 import com.ht_dq.rotp_kingcrimson.client.render.vfx.TemporaryDimensionEffects;
 import com.ht_dq.rotp_kingcrimson.init.AddonStands;
 import com.ht_dq.rotp_kingcrimson.init.InitEntities;
@@ -23,7 +23,7 @@ public class ClientInit {
         RenderingRegistry.registerEntityRenderingHandler(AddonStands.KINGCRIMSON.getEntityType(), KingCrimsonRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(InitEntities.AFTERIMAGE.get(), AfterimageRenderer::new);
         event.enqueueWork(() -> {
-            ClientEventHandler2.init(mc);
+            ClientEventHandler.init(mc);
             TemporaryDimensionEffects.init();
         });
     }
