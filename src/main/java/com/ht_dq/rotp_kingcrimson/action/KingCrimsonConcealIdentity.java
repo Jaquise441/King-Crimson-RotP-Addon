@@ -9,9 +9,7 @@ import com.ht_dq.rotp_kingcrimson.capability.LivingUtilCapProvider;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber
 public class KingCrimsonConcealIdentity extends StandEntityAction {
 
     public KingCrimsonConcealIdentity(StandEntityAction.Builder builder) {

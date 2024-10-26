@@ -1,13 +1,13 @@
 package com.ht_dq.rotp_kingcrimson.init;
 
-import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
-import com.ht_dq.rotp_kingcrimson.action.*;
-import com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeSkip.KingCrimsonAbility;
-import com.ht_dq.rotp_kingcrimson.entity.stand.stands.KingCrimsonEntity;
 import com.github.standobyte.jojo.action.Action;
-import com.github.standobyte.jojo.action.stand.*;
 import com.github.standobyte.jojo.action.stand.StandAction;
+import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.action.stand.StandEntityAction.Phase;
+import com.github.standobyte.jojo.action.stand.StandEntityBlock;
+import com.github.standobyte.jojo.action.stand.StandEntityHeavyAttack;
+import com.github.standobyte.jojo.action.stand.StandEntityLightAttack;
+import com.github.standobyte.jojo.action.stand.StandEntityMeleeBarrage;
 import com.github.standobyte.jojo.entity.stand.StandEntityType;
 import com.github.standobyte.jojo.init.power.stand.EntityStandRegistryObject;
 import com.github.standobyte.jojo.init.power.stand.ModStandsInit;
@@ -15,6 +15,14 @@ import com.github.standobyte.jojo.power.impl.stand.StandInstance.StandPart;
 import com.github.standobyte.jojo.power.impl.stand.stats.StandStats;
 import com.github.standobyte.jojo.power.impl.stand.type.EntityStandType;
 import com.github.standobyte.jojo.power.impl.stand.type.StandType;
+import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
+import com.ht_dq.rotp_kingcrimson.action.KingCrimsonChop;
+import com.ht_dq.rotp_kingcrimson.action.KingCrimsonEpitaph;
+import com.ht_dq.rotp_kingcrimson.action.KingCrimsonGroundPunch;
+import com.ht_dq.rotp_kingcrimson.action.KingCrimsonImpale;
+import com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase;
+import com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeSkip;
+import com.ht_dq.rotp_kingcrimson.entity.stand.stands.KingCrimsonEntity;
 
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -86,7 +94,7 @@ public class InitStands {
 
 
     public static final RegistryObject<StandAction> KINGCRIMSON_TIMESKIP = ACTIONS.register("kingcrimson_timeskip",
-            () -> new KingCrimsonAbility(new StandEntityAction.Builder()
+            () -> new KingCrimsonTimeSkip(new StandEntityAction.Builder()
                     .staminaCost(200)
                     .cooldown(60)
                     .standSound(InitSounds.KINGCRIMSON_TIMESKIP)

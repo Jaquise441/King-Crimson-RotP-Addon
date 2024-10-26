@@ -1,12 +1,17 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
+import java.util.Random;
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
+import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
@@ -29,10 +34,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import javax.annotation.Nullable;
-import java.util.Random;
-import java.util.UUID;
 
 public class KingCrimsonEpitaph extends StandEntityAction {
 
@@ -229,7 +230,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             if (attacker instanceof LivingEntity) {
                 LivingEntity livingAttacker = (LivingEntity) attacker;
 
-                TimeSkipHandler.startVFX(player, true);
+                VFXServerHelper.startVFX(player, true);
 
                 double distanceToAttacker = player.position().distanceTo(livingAttacker.position());
 

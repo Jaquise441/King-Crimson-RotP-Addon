@@ -1,22 +1,32 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.github.standobyte.jojo.action.ActionConditionResult;
 import com.github.standobyte.jojo.action.ActionTarget;
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.capability.world.TimeStopHandler;
+import com.github.standobyte.jojo.entity.AfterimageEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import com.ht_dq.rotp_kingcrimson.network.server.KingCrimsonDimensionChangeHandler;
 import com.ht_dq.rotp_kingcrimson.network.server.PlayerTimerActivePacket;
 import com.ht_dq.rotp_kingcrimson.network.server.RemoveTimerActivePacket;
+import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import com.github.standobyte.jojo.entity.AfterimageEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.monster.piglin.PiglinBruteEntity;
+import net.minecraft.entity.monster.piglin.PiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.IPacket;
@@ -36,16 +46,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.entity.monster.piglin.PiglinBruteEntity;
-import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class KingCrimsonTimeErase extends StandEntityAction {
 
@@ -103,7 +105,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                 disablePiglinAggression(player);
                 MinecraftForge.EVENT_BUS.register(new TimeEraseHandler(player.getUUID(), standEntity, userPower, task));
                 playSound(player, InitSounds.TIME_ERASE_START.get(), true);
-                TimeSkipHandler.startVFX(player, false);
+                VFXServerHelper.startVFX(player, false);
             }
         }
     }
@@ -136,7 +138,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     }
                     dimensionChangeHandlers.remove(playerId);
                     DelayedTaskScheduler.stopRepeating();
-                    TimeSkipHandler.startVFX(player, true);
+                    VFXServerHelper.startVFX(player, true);
                 }
             }
         }
