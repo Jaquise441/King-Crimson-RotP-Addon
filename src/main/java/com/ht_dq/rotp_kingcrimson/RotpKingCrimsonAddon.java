@@ -7,6 +7,7 @@ import com.ht_dq.rotp_kingcrimson.capability.CapabilityHandler;
 import com.ht_dq.rotp_kingcrimson.init.InitEffects;
 import com.ht_dq.rotp_kingcrimson.init.InitEntities;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
+import com.ht_dq.rotp_kingcrimson.init.InitStandEffects;
 import com.ht_dq.rotp_kingcrimson.init.InitStands;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 
@@ -28,6 +29,7 @@ public class RotpKingCrimsonAddon {
         InitSounds.SOUNDS.register(modEventBus);
         InitStands.ACTIONS.register(modEventBus);
         InitStands.STANDS.register(modEventBus);
+        InitStandEffects.STAND_EFFECTS.register(modEventBus);
 
         AddonPackets.init();
 

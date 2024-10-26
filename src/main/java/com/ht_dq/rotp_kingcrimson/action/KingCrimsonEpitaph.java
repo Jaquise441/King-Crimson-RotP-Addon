@@ -1,50 +1,44 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
+import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
+import com.github.standobyte.jojo.action.stand.effect.StandEffectInstance;
+import com.github.standobyte.jojo.action.stand.effect.StandEffectType;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
-import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
+import com.ht_dq.rotp_kingcrimson.client.render.vfx.EpitaphVFX;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
+import com.ht_dq.rotp_kingcrimson.init.InitStandEffects;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 public class KingCrimsonEpitaph extends StandEntityAction {
-
     private static final int EFFECT_DURATION = 60;
     private static final int SLOWNESS_LEVEL = 1;
     private static final double TELEPORT_DISTANCE = 3.0;
     private static final double DASH_BACKWARD_DISTANCE = 2.0;
-
-    private static final ResourceLocation EPITAPH_SHADER = new ResourceLocation(RotpKingCrimsonAddon.MOD_ID, "shaders/post/epitaph.json");
-
-    private EpitaphHandler epitaphHandler;
 
     public KingCrimsonEpitaph(AbstractBuilder<?> builder) {
         super(builder);
@@ -62,83 +56,84 @@ public class KingCrimsonEpitaph extends StandEntityAction {
     @Override
     public void standPerform(World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
         if (!world.isClientSide()) {
-            PlayerEntity player = (PlayerEntity) standEntity.getUser();
-            if (player != null) {
-                applyEffects(player, true);
-                epitaphHandler = new EpitaphHandler(player.getUUID(), standEntity, userPower, task);
-                MinecraftForge.EVENT_BUS.register(epitaphHandler);
+            LivingEntity user = standEntity.getUser();
+            if (user != null) {
+                applyEffects(user, true);
+                userPower.getContinuousEffects().addEffect(new EpitaphEffect());
             }
         }
     }
 
     @Override
     protected void onTaskStopped(World world, StandEntity standEntity, IStandPower standPower, StandEntityTask task, @Nullable StandEntityAction newAction) {
-        PlayerEntity player = (PlayerEntity) standEntity.getUser();
+        LivingEntity player = standEntity.getUser();
         if (player != null) {
             applyEffects(player, false);
-            if (epitaphHandler != null) {
-                MinecraftForge.EVENT_BUS.unregister(epitaphHandler);
-                epitaphHandler = null;
-            }
+            getEffectOfType(player, InitStandEffects.EPITAPH.get()).ifPresent(StandEffectInstance::remove);
             if (world.isClientSide()) {
-                Minecraft mc = Minecraft.getInstance();
-                ((GameRenderer)(Object)mc.gameRenderer).shutdownEffect();
+                EpitaphVFX.stopEffect();
             }
         }
     }
 
-    private static void applyEffects(PlayerEntity player, boolean start) {
+    private static void applyEffects(LivingEntity player, boolean start) {
         if (start) {
             player.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, EFFECT_DURATION, SLOWNESS_LEVEL, false, false));
         } else {
             player.removeEffect(Effects.MOVEMENT_SLOWDOWN);
         }
     }
-
-    public static class EpitaphHandler {
-        private final UUID playerUUID;
-        private final StandEntity standEntity;
-        private final IStandPower userPower;
-        private final StandEntityTask task;
-        private boolean shaderLoaded = false;
-
-        public EpitaphHandler(UUID playerUUID, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
-            this.playerUUID = playerUUID;
-            this.standEntity = standEntity;
-            this.userPower = userPower;
-            this.task = task;
-        }
-
+    
+    
+    @Mod.EventBusSubscriber
+    public static class EventHandler {
+        
         @SubscribeEvent
-        public void onLivingAttack(LivingAttackEvent event) {
-            if (event.getEntityLiving().getUUID().equals(playerUUID)) {
-                PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-                DamageSource source = event.getSource();
-                Entity attacker = source.getEntity();
+        public static void onLivingAttack(LivingAttackEvent event) {
+            Optional<EpitaphEffect> epitaphEffect = getEffectOfType(event.getEntityLiving(), InitStandEffects.EPITAPH.get());
+            epitaphEffect.ifPresent(epitaph -> epitaph.onLivingAttack(event));
+        }
+        
+    }
+    
+    
+    public static class EpitaphEffect extends StandEffectInstance {
 
-                if (!(source == DamageSource.FALL)) {
-                    event.setCanceled(true);
-
-                    if (userPower.getResolveLevel() >= 3) {
-                        if (attacker instanceof StandEntity) {
-                            handleEpitaphTeleportBehind(player, ((StandEntity) attacker).getUser());
-                        } else {
-                            handleEpitaphTeleport(player, attacker);
-                        }
-
-                        if (attacker instanceof LivingEntity) {
-                            applyAfterEpitaphEffect((LivingEntity) attacker);
-                        }
-                    } else {
-                        handleDashBackward(player, attacker);
-                    }
-
-                    MinecraftForge.EVENT_BUS.unregister(this);
-                }
-            }
+        public EpitaphEffect() {
+            this(InitStandEffects.EPITAPH.get());
         }
 
-        private void handleAttack(PlayerEntity player, Entity attacker, DamageSource source) {
+        public EpitaphEffect(StandEffectType<?> effectType) {
+            super(effectType);
+        }
+
+        @Override
+        protected void start() {}
+
+        @Override
+        protected void tickTarget(LivingEntity target) {}
+
+        @Override
+        protected void tick() {
+            if (user.level.isClientSide()) {
+                EpitaphVFX.playerTick();
+            }
+            
+        }
+
+        @Override
+        protected void stop() {}
+
+        @Override
+        protected boolean needsTarget() {
+            return false;
+        }
+        
+        
+        public void onLivingAttack(LivingAttackEvent event) {
+            DamageSource source = event.getSource();
+            Entity attacker = source.getEntity();
+
             if (userPower.getResolveLevel() < 3) {
                 if (source.isExplosion() || (attacker instanceof MobEntity && attacker.getType().getRegistryName().toString().contains("creeper"))) {
                     return;
@@ -146,27 +141,27 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             }
 
             if (!(source == DamageSource.FALL)) {
+                event.setCanceled(true);
+
                 if (userPower.getResolveLevel() >= 3) {
                     if (attacker instanceof StandEntity) {
-                        handleEpitaphTeleportBehind(player, ((StandEntity) attacker).getUser());
+                        handleEpitaphTeleportBehind(user, ((StandEntity) attacker).getUser());
                     } else {
-                        handleEpitaphTeleport(player, attacker);
+                        handleEpitaphTeleport(user, attacker);
                     }
 
                     if (attacker instanceof LivingEntity) {
                         applyAfterEpitaphEffect((LivingEntity) attacker);
                     }
                 } else {
-                    handleDashBackward(player, attacker);
+                    handleDashBackward(user, attacker);
                 }
+
+                this.remove();
             }
         }
 
-        private void applyAfterEpitaphEffect(LivingEntity target) {
-            target.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 20, 1, false, false));
-        }
-
-        private void handleDashBackward(PlayerEntity player, @Nullable Entity attacker) {
+        private static void handleDashBackward(LivingEntity player, @Nullable Entity attacker) {
             World world = player.level;
             Vector3d currentPosition = player.position();
             Vector3d backwardDirection = player.getLookAngle().scale(-1).normalize();
@@ -208,7 +203,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             playSound(player, InitSounds.KINGCRIMSON_DASH.get());
         }
 
-        private Vector3d getSidewaysDashDirection(PlayerEntity player, Entity attacker) {
+        private static Vector3d getSidewaysDashDirection(LivingEntity player, Entity attacker) {
             Vector3d attackerPosition = attacker.position();
             Vector3d playerPosition = player.position();
 
@@ -225,8 +220,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             }
         }
 
-
-        private void handleEpitaphTeleport(PlayerEntity player, @Nullable Entity attacker) {
+        private static void handleEpitaphTeleport(LivingEntity player, @Nullable Entity attacker) {
             if (attacker instanceof LivingEntity) {
                 LivingEntity livingAttacker = (LivingEntity) attacker;
 
@@ -251,14 +245,14 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             }
         }
 
-        private void handleEpitaphTeleportBehind(PlayerEntity player, @Nullable Entity standUser) {
+        private static void handleEpitaphTeleportBehind(LivingEntity player, @Nullable Entity standUser) {
             if (standUser instanceof LivingEntity) {
                 LivingEntity livingUser = (LivingEntity) standUser;
                 teleportAround(player, livingUser);
             }
         }
 
-        private void teleportAround(PlayerEntity player, LivingEntity target) {
+        private static void teleportAround(LivingEntity player, LivingEntity target) {
             Vector3d lookDirection = target.getLookAngle().normalize();
 
             Vector3d behindTarget = target.position().subtract(lookDirection.scale(TELEPORT_DISTANCE));
@@ -272,7 +266,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
 
         }
 
-        private Vector3d searchForClearSpot(World world, Vector3d targetPosition, Vector3d lookDirection) {
+        private static Vector3d searchForClearSpot(World world, Vector3d targetPosition, Vector3d lookDirection) {
             Random rand = new Random();
 
             Vector3d left = targetPosition.add(lookDirection.cross(new Vector3d(0, 1, 0)).scale(TELEPORT_DISTANCE));
@@ -294,7 +288,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             return findClearPositionAround(world, targetPosition);
         }
 
-        private Vector3d findClearPositionAround(World world, Vector3d targetPosition) {
+        private static Vector3d findClearPositionAround(World world, Vector3d targetPosition) {
             BlockPos basePos = new BlockPos(targetPosition);
 
             for (int x = -3; x <= 3; x++) {
@@ -312,11 +306,11 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             return targetPosition;
         }
 
-        private boolean isBlockSolid(World world, BlockPos pos) {
+        private static boolean isBlockSolid(World world, BlockPos pos) {
             return world.getBlockState(pos).isSolidRender(world, pos);
         }
 
-        private boolean isPositionClear(World world, BlockPos pos) {
+        private static boolean isPositionClear(World world, BlockPos pos) {
             if (pos.getY() < 0 || pos.getY() >= world.getMaxBuildHeight()) {
                 return false;
             }
@@ -324,25 +318,30 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             return !isBlockSolid(world, pos) && !isBlockSolid(world, pos.above()) && !isBlockSolid(world, pos.above(2));
         }
 
-        private void playSound(PlayerEntity player, SoundEvent sound) {
+        private static void playSound(LivingEntity player, SoundEvent sound) {
             player.level.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
         }
 
-        @SubscribeEvent
-        public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-            if (event.player.getUUID().equals(playerUUID)) {
-                if (event.player.isAlive()) {
-                    if (event.player.level.isClientSide()) {
-                        Minecraft mc = Minecraft.getInstance();
-                        if (!shaderLoaded) {
-                            RenderSystem.recordRenderCall(() -> {
-                                ((GameRenderer)(Object)mc.gameRenderer).loadEffect(EPITAPH_SHADER);
-                            });
-                            shaderLoaded = true;
-                        }
-                    }
-                }
-            }
+        private static void applyAfterEpitaphEffect(LivingEntity target) {
+            target.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 20, 1, false, false));
         }
     }
+    
+    
+    @Deprecated // just realized i should add a method for that to the main mod, so i'll do it in the next patch
+    public static <T extends StandEffectInstance> Stream<T> getEffectsOfType(LivingEntity user, StandEffectType<T> type) {
+        return IStandPower.getStandPowerOptional(user)
+                .map(power -> power.getContinuousEffects().getEffects(effect -> effect.effectType == type))
+                .map(List::stream).orElse(Stream.empty())
+                .map(standEffectInstance -> (T) standEffectInstance);
+    }
+    
+    @Deprecated 
+    public static <T extends StandEffectInstance> Optional<T> getEffectOfType(LivingEntity user, StandEffectType<T> type) {
+        return IStandPower.getStandPowerOptional(user)
+                .map(power -> power.getContinuousEffects().getEffects(effect -> effect.effectType == type))
+                .flatMap(effects -> !effects.isEmpty() ? Optional.of(effects.get(0)) : Optional.empty())
+                .map(standEffectInstance -> (T) standEffectInstance);
+    }
+    
 }
