@@ -2,15 +2,16 @@ package com.ht_dq.rotp_kingcrimson.network.server;
 
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
+import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 public class KingCrimsonDimensionChangeHandler {
 
@@ -82,7 +83,7 @@ public class KingCrimsonDimensionChangeHandler {
         playSound(player, InitSounds.TIME_ERASE_END.get(), false);
         stopSound(player, InitSounds.TIME_ERASE_START.get());
 
-        TimeSkipHandler.startVFX(player, true);
+        VFXServerHelper.startVFX(player, true);
     }
 
     private void removeMarkers(ServerWorld world) {

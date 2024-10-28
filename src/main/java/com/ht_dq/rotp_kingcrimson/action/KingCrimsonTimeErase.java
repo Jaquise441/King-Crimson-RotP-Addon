@@ -1,22 +1,32 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.github.standobyte.jojo.action.ActionConditionResult;
 import com.github.standobyte.jojo.action.ActionTarget;
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.capability.world.TimeStopHandler;
+import com.github.standobyte.jojo.entity.AfterimageEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import com.ht_dq.rotp_kingcrimson.network.server.KingCrimsonDimensionChangeHandler;
 import com.ht_dq.rotp_kingcrimson.network.server.PlayerTimerActivePacket;
 import com.ht_dq.rotp_kingcrimson.network.server.RemoveTimerActivePacket;
+import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import com.github.standobyte.jojo.entity.AfterimageEntity;
+import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraft.entity.monster.piglin.PiglinBruteEntity;
+import net.minecraft.entity.monster.piglin.PiglinEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.IPacket;
@@ -36,21 +46,14 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import net.minecraft.entity.monster.piglin.PiglinEntity;
-import net.minecraft.entity.monster.piglin.PiglinBruteEntity;
-import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class KingCrimsonTimeErase extends StandEntityAction {
 
     private static final int MAX_DURATION = 200;
     private static final double RADIUS = 192.0;
+    // FIXME if a player disconnects/crashes during their time erase, they won't be able to use it until the server restarts
     public static final Map<UUID, Boolean> playerTimeEraseActive = new HashMap<>();
     private final Map<UUID, KingCrimsonDimensionChangeHandler> dimensionChangeHandlers = new HashMap<>();
     private static boolean isTimeEraseActive = false;
@@ -67,11 +70,11 @@ public class KingCrimsonTimeErase extends StandEntityAction {
     protected ActionConditionResult checkSpecificConditions(LivingEntity user, IStandPower power, ActionTarget target) {
         AtomicBoolean activation = new AtomicBoolean(true);
         playerTimeEraseActive.keySet().forEach(entry ->{
-            if (entry != user.getUUID()){
+            if (!entry.equals(user.getUUID())){
                 activation.set(false);
             }
         });
-        return activation.get() ?ActionConditionResult.POSITIVE:ActionConditionResult.NEGATIVE;
+        return ActionConditionResult.noMessage(activation.get());
     }
 
     @Override
@@ -102,7 +105,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                 disablePiglinAggression(player);
                 MinecraftForge.EVENT_BUS.register(new TimeEraseHandler(player.getUUID(), standEntity, userPower, task));
                 playSound(player, InitSounds.TIME_ERASE_START.get(), true);
-                TimeSkipHandler.startVFX(player, false);
+                VFXServerHelper.startVFX(player, false);
             }
         }
     }
@@ -135,7 +138,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     }
                     dimensionChangeHandlers.remove(playerId);
                     DelayedTaskScheduler.stopRepeating();
-                    TimeSkipHandler.startVFX(player, true);
+                    VFXServerHelper.startVFX(player, true);
                 }
             }
         }
@@ -270,7 +273,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
     private static void stopSound(PlayerEntity player, SoundEvent sound) {
         if (player instanceof ServerPlayerEntity) {
-            ((ServerPlayerEntity) player).connection.send(new SStopSoundPacket(sound.getLocation(), SoundCategory.PLAYERS));
+            ((ServerPlayerEntity) player).connection.send(new SStopSoundPacket(sound.getRegistryName(), SoundCategory.PLAYERS));
         }
     }
 
