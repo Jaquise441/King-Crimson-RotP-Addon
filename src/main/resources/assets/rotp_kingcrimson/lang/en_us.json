@@ -15,5 +15,8 @@
   "action.rotp_kingcrimson.kingcrimson_timeerase": "Time Erase",
   "action.rotp_kingcrimson.kingcrimson_conceal_identity": "Conceal Identity",
 
+  "effect.rotp_kingcrimson.bleeding": "Bleeding",
+  "effect.rotp_kingcrimson.mangled_body": "Mangled Body",
+  "effect.rotp_kingcrimson.gaping_wound": "Gaping Wound",
   "rotp_kingcrimson.subtitle.kingcrimson_name": "\"King Crimson\""
 }

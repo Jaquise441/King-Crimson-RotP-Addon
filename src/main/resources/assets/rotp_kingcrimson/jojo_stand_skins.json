@@ -1,0 +1,20 @@
+{
+  "skins": {
+    "rotp_kingcrimson:SkinA": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xD90F13"
+    },
+    "rotp_kingcrimson:SkinB": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xFDFD5E"
+    },
+    "rotp_kingcrimson:SkinC": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xE079FA"
+    },
+    "rotp_kingcrimson:SkinD": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0x82BA74"
+    }
+  }
+}

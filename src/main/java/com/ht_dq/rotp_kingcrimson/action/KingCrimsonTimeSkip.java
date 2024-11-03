@@ -43,7 +43,5 @@ public class KingCrimsonTimeSkip extends StandEntityAction {
                 entity.tick();
             }
         }
-
     }
-
 }

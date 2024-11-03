@@ -327,7 +327,6 @@ public class KingCrimsonEpitaph extends StandEntityAction {
         }
     }
     
-    
     @Deprecated // just realized i should add a method for that to the main mod, so i'll do it in the next patch
     public static <T extends StandEffectInstance> Stream<T> getEffectsOfType(LivingEntity user, StandEffectType<T> type) {
         return IStandPower.getStandPowerOptional(user)
@@ -335,13 +334,13 @@ public class KingCrimsonEpitaph extends StandEntityAction {
                 .map(List::stream).orElse(Stream.empty())
                 .map(standEffectInstance -> (T) standEffectInstance);
     }
-    
-    @Deprecated 
+
+    @Deprecated
     public static <T extends StandEffectInstance> Optional<T> getEffectOfType(LivingEntity user, StandEffectType<T> type) {
         return IStandPower.getStandPowerOptional(user)
                 .map(power -> power.getContinuousEffects().getEffects(effect -> effect.effectType == type))
                 .flatMap(effects -> !effects.isEmpty() ? Optional.of(effects.get(0)) : Optional.empty())
                 .map(standEffectInstance -> (T) standEffectInstance);
     }
-    
+
 }

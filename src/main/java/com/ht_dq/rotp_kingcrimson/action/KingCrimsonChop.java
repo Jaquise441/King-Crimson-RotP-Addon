@@ -1,5 +1,9 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
+import com.github.standobyte.jojo.action.stand.StandEntityLightAttack;
+import com.github.standobyte.jojo.entity.stand.StandStatFormulas;
+import com.github.standobyte.jojo.init.ModStatusEffects;
+import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.ht_dq.rotp_kingcrimson.init.InitEffects;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.github.standobyte.jojo.action.stand.StandEntityHeavyAttack;
@@ -12,12 +16,28 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public class KingCrimsonChop extends StandEntityHeavyAttack {
+public class KingCrimsonChop extends StandEntityLightAttack {
     public static final StandPose CHOP = new StandPose("kingcrimson_chop");
 
     public KingCrimsonChop(Builder builder) {
         super(builder);
+    }
+
+
+    @Override
+    public int getStandWindupTicks(IStandPower standPower, StandEntity standEntity) {
+        return StandStatFormulas.getHeavyAttackWindup(standEntity.getAttackSpeed(), standEntity.getFinisherMeter());
+    }
+
+    @Override
+    public int getStandRecoveryTicks(IStandPower standPower, StandEntity standEntity) {
+        return StandStatFormulas.getHeavyAttackRecovery(standEntity.getAttackSpeed(), standEntity.getLastHeavyFinisherValue());
     }
 
     @Override
@@ -28,11 +48,11 @@ public class KingCrimsonChop extends StandEntityHeavyAttack {
                 .disableBlocking((float) stand.getProximityRatio(target) - 0.25F)
                 .impactSound(InitSounds.KINGCRIMSON_CHOP)
                 .damage((float) stand.getAttackDamage() * 1.25F)
-                .reduceKnockback(5.0F);
+                .reduceKnockback(15.0F);
 
     }
 
-    public static class KingcrimsonChopInstance extends HeavyPunchInstance {
+    public static class KingcrimsonChopInstance extends LightPunchInstance {
 
         public KingcrimsonChopInstance(StandEntity stand, Entity target, StandEntityDamageSource dmgSource) {
             super(stand, target, dmgSource);
@@ -45,9 +65,15 @@ public class KingCrimsonChop extends StandEntityHeavyAttack {
             if (hurt && target instanceof LivingEntity) {
                 LivingEntity livingTarget = (LivingEntity) target;
 
+                livingTarget.addEffect(new EffectInstance(ModStatusEffects.BLEEDING.get(), 80, 0, false, false));
                 livingTarget.addEffect(new EffectInstance(InitEffects.BLEEDING.get(), 80, 1, false, false));
                 livingTarget.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 80, 3, false, false));
-                livingTarget.addEffect(new EffectInstance(Effects.WEAKNESS, 80, 3, false, false));
+            }
+
+            if (hurt && target instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) target;
+
+                player.addEffect(new EffectInstance(InitEffects.MANGLED_BODY.get(), 80, 1, false, false));
             }
         }
     }

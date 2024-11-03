@@ -63,30 +63,32 @@ public class InitStands {
                     .setFinisherVariation(KINGCRIMSON_GROUNDPUNCH)
                     .shiftVariationOf(KINGCRIMSON_PUNCH).shiftVariationOf(KINGCRIMSON_BARRAGE)));
 
-    public static final RegistryObject<StandEntityHeavyAttack> KINGCRIMSON_CHOP = ACTIONS.register("kingcrimson_chop",
-            () -> new KingCrimsonChop(new StandEntityHeavyAttack.Builder()
+    public static final RegistryObject<StandEntityLightAttack> KINGCRIMSON_CHOP = ACTIONS.register("kingcrimson_chop",
+            () -> new KingCrimsonChop(new StandEntityLightAttack.Builder()
                     .cooldown(350)
                     .staminaCost(200)
                     .standUserWalkSpeed(0.5F)
                     .resolveLevelToUnlock(3)
                     .standPose(KingCrimsonChop.CHOP)
+                    .autoSummonStand()
                     .standOffsetFromUser(-0.15, 0.75, 0)
                     .punchSound(InitSounds.KINGCRIMSON_CHOP)
                     .shout(InitSounds.DIAVOLO_CHOP)
-                    .partsRequired(StandPart.ARMS)));
+                    .partsRequired(StandPart.MAIN_BODY)));
 
 
-    public static final RegistryObject<StandEntityHeavyAttack> KINGCRIMSON_IMPALE = ACTIONS.register("kingcrimson_impale",
-            () -> new KingCrimsonImpale(new StandEntityHeavyAttack.Builder()
+    public static final RegistryObject<StandEntityLightAttack> KINGCRIMSON_IMPALE = ACTIONS.register("kingcrimson_impale",
+            () -> new KingCrimsonImpale(new StandEntityLightAttack.Builder()
                     .cooldown(180)
                     .staminaCost(150)
                     .resolveLevelToUnlock(4)
                     .standPose(KingCrimsonImpale.IMPALE)
+                    .autoSummonStand()
                     .standOffsetFromUser(-0.15, 0.75, 0)
                     .punchSound(InitSounds.KINGCRIMSON_IMPALE)
                     .shout(InitSounds.DIAVOLO_IMPALE)
                     .shiftVariationOf(KINGCRIMSON_CHOP)
-                    .partsRequired(StandPart.ARMS)));
+                    .partsRequired(StandPart.MAIN_BODY)));
 
 
     public static final RegistryObject<StandEntityAction> KINGCRIMSON_BLOCK = ACTIONS.register("kingcrimson_block",

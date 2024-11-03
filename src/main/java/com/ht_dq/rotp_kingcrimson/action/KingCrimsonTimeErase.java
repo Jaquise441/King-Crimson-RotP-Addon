@@ -22,6 +22,7 @@ import com.ht_dq.rotp_kingcrimson.network.server.PlayerTimerActivePacket;
 import com.ht_dq.rotp_kingcrimson.network.server.RemoveTimerActivePacket;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -44,9 +45,13 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class KingCrimsonTimeErase extends StandEntityAction {
@@ -291,8 +296,8 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             this.task = task;
         }
 
-        @SubscribeEvent
-        public static void onItemPickup(EntityItemPickupEvent event) {
+        @SubscribeEvent(priority = EventPriority.HIGH)
+        public void onItemPickup(EntityItemPickupEvent event) {
             PlayerEntity player = event.getPlayer();
             if (playerTimeEraseActive.containsKey(player.getUUID()) && Boolean.TRUE.equals(playerTimeEraseActive.get(player.getUUID()))) {
                 event.setCanceled(true);
@@ -300,33 +305,85 @@ public class KingCrimsonTimeErase extends StandEntityAction {
         }
 
         @SubscribeEvent
+        public static void onRenderWorldLast(RenderWorldLastEvent event) {
+            Minecraft mc = Minecraft.getInstance();
+            PlayerEntity player = mc.player;
+
+            if (player != null && playerTimeEraseActive.containsKey(player.getUUID())
+                    && Boolean.TRUE.equals(playerTimeEraseActive.get(player.getUUID()))
+                    && player.isSprinting()) {
+
+                player.clearFire();
+
+            }
+        }
+
+        @SubscribeEvent
         public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-            if(!TimeStopHandler.isTimeStopped(event.player.level,event.player.blockPosition())){
+            if (!TimeStopHandler.isTimeStopped(event.player.level, event.player.blockPosition())) {
                 if (event.player.getUUID().equals(playerUUID) && event.phase == TickEvent.Phase.END) {
-                    if (!event.player.isUsingItem()) {
-                        if (isUsingItem) {
-                            isUsingItem = false;
-                            stopTimeErase(event.player);
-                        }
-                    } else {
-                        isUsingItem = true;
+                    if (event.player.isUsingItem()) {
+                        stopTimeErase(event.player);
                     }
                 }
             }
-
         }
 
+        @SubscribeEvent
+        public void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
+            if (event.getPlayer().getUUID().equals(playerUUID)) {
+                stopTimeErase(event.getPlayer());
+            }
+        }
 
+        @SubscribeEvent
+        public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+            if (event.getPlayer().getUUID().equals(playerUUID)) {
+                stopTimeErase(event.getPlayer());
+            }
+        }
+
+        @SubscribeEvent
+        public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+            if (event.getPlayer().getUUID().equals(playerUUID)) {
+                stopTimeErase(event.getPlayer());
+            }
+        }
+
+        @SubscribeEvent
+        public void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+            if (event.getPlayer().getUUID().equals(playerUUID)) {
+                stopTimeErase(event.getPlayer());
+            }
+        }
+
+        @SubscribeEvent
+        public void onAttackEntity(AttackEntityEvent event) {
+            PlayerEntity player = event.getPlayer();
+            if (player.getUUID().equals(playerUUID)) {
+                stopTimeErase(player);
+            }
+        }
+
+        @SubscribeEvent
+        public void onLeftClickEntitySpecific(PlayerInteractEvent.EntityInteractSpecific event) {
+            PlayerEntity player = event.getPlayer();
+            if (player.getUUID().equals(playerUUID)) {
+                stopTimeErase(player);
+            }
+        }
 
         private void stopTimeErase(PlayerEntity player) {
             MinecraftForge.EVENT_BUS.unregister(this);
             DelayedTaskScheduler.stopRepeating();
             if (player instanceof ServerPlayerEntity) {
-
                 ((ServerPlayerEntity) player).closeContainer();
             }
+            userPower.stopHeldAction(false);
         }
     }
+
+
 
     public static class DelayedTaskScheduler {
         private static final Map<Integer, ConcurrentLinkedQueue<Runnable>> tasks = new HashMap<>();
