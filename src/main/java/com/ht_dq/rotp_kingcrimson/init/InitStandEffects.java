@@ -9,8 +9,8 @@ import net.minecraftforge.registries.DeferredRegister;
 
 public class InitStandEffects {
     @SuppressWarnings("unchecked")
-    public static final DeferredRegister<StandEffectType<?>> STAND_EFFECTS = DeferredRegister.create(StandEffectType.class, RotpKingCrimsonAddon.MOD_ID);
-
+    public static final DeferredRegister<StandEffectType<?>> STAND_EFFECTS = DeferredRegister.create(
+            (Class<StandEffectType<?>>) ((Class<?>) StandEffectType.class), RotpKingCrimsonAddon.MOD_ID);
     
     public static final RegistryObject<StandEffectType<KingCrimsonEpitaph.EpitaphEffect>> EPITAPH = STAND_EFFECTS.register(
             "epitaph", () -> new StandEffectType<>(KingCrimsonEpitaph.EpitaphEffect::new));
