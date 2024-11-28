@@ -1,9 +1,7 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
@@ -13,6 +11,7 @@ import com.github.standobyte.jojo.action.stand.effect.StandEffectType;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
+import com.github.standobyte.jojo.power.impl.stand.StandEffectsTracker;
 import com.ht_dq.rotp_kingcrimson.client.render.vfx.EpitaphVFX;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.init.InitStandEffects;
@@ -69,7 +68,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
         LivingEntity player = standEntity.getUser();
         if (player != null) {
             applyEffects(player, false);
-            getEffectOfType(player, InitStandEffects.EPITAPH.get()).ifPresent(StandEffectInstance::remove);
+            StandEffectsTracker.getEffectOfType(player, InitStandEffects.EPITAPH.get()).ifPresent(StandEffectInstance::remove);
             if (world.isClientSide()) {
                 EpitaphVFX.stopEffect();
             }
@@ -90,7 +89,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
         
         @SubscribeEvent
         public static void onLivingAttack(LivingAttackEvent event) {
-            Optional<EpitaphEffect> epitaphEffect = getEffectOfType(event.getEntityLiving(), InitStandEffects.EPITAPH.get());
+            Optional<EpitaphEffect> epitaphEffect = StandEffectsTracker.getEffectOfType(event.getEntityLiving(), InitStandEffects.EPITAPH.get());
             epitaphEffect.ifPresent(epitaph -> epitaph.onLivingAttack(event));
         }
         
@@ -325,22 +324,6 @@ public class KingCrimsonEpitaph extends StandEntityAction {
         private static void applyAfterEpitaphEffect(LivingEntity target) {
             target.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 20, 1, false, false));
         }
-    }
-    
-    @Deprecated // just realized i should add a method for that to the main mod, so i'll do it in the next patch
-    public static <T extends StandEffectInstance> Stream<T> getEffectsOfType(LivingEntity user, StandEffectType<T> type) {
-        return IStandPower.getStandPowerOptional(user)
-                .map(power -> power.getContinuousEffects().getEffects(effect -> effect.effectType == type))
-                .map(List::stream).orElse(Stream.empty())
-                .map(standEffectInstance -> (T) standEffectInstance);
-    }
-
-    @Deprecated
-    public static <T extends StandEffectInstance> Optional<T> getEffectOfType(LivingEntity user, StandEffectType<T> type) {
-        return IStandPower.getStandPowerOptional(user)
-                .map(power -> power.getContinuousEffects().getEffects(effect -> effect.effectType == type))
-                .flatMap(effects -> !effects.isEmpty() ? Optional.of(effects.get(0)) : Optional.empty())
-                .map(standEffectInstance -> (T) standEffectInstance);
     }
 
 }
