@@ -50,6 +50,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -58,7 +59,6 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
     private static final int MAX_DURATION = 200;
     private static final double RADIUS = 192.0;
-    // FIXME if a player disconnects/crashes during their time erase, they won't be able to use it until the server restarts
     public static final Map<UUID, Boolean> playerTimeEraseActive = new HashMap<>();
     private final Map<UUID, KingCrimsonDimensionChangeHandler> dimensionChangeHandlers = new HashMap<>();
     private static boolean isTimeEraseActive = false;
@@ -304,6 +304,14 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             }
         }
 
+        @SubscribeEvent(priority = EventPriority.HIGH)
+        public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+            PlayerEntity player = event.getPlayer();
+            if (playerTimeEraseActive.containsKey(player.getUUID()) && Boolean.TRUE.equals(playerTimeEraseActive.get(player.getUUID()))) {
+                stopTimeErase(player);
+            }
+        }
+
         @SubscribeEvent
         public static void onRenderWorldLast(RenderWorldLastEvent event) {
             Minecraft mc = Minecraft.getInstance();
@@ -312,9 +320,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             if (player != null && playerTimeEraseActive.containsKey(player.getUUID())
                     && Boolean.TRUE.equals(playerTimeEraseActive.get(player.getUUID()))
                     && player.isSprinting()) {
-
                 player.clearFire();
-
             }
         }
 

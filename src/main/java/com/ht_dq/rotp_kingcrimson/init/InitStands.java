@@ -1,29 +1,18 @@
 package com.ht_dq.rotp_kingcrimson.init;
 
 import com.github.standobyte.jojo.action.Action;
-import com.github.standobyte.jojo.action.stand.StandAction;
-import com.github.standobyte.jojo.action.stand.StandEntityAction;
+import com.github.standobyte.jojo.action.stand.*;
 import com.github.standobyte.jojo.action.stand.StandEntityAction.Phase;
-import com.github.standobyte.jojo.action.stand.StandEntityBlock;
-import com.github.standobyte.jojo.action.stand.StandEntityHeavyAttack;
-import com.github.standobyte.jojo.action.stand.StandEntityLightAttack;
-import com.github.standobyte.jojo.action.stand.StandEntityMeleeBarrage;
 import com.github.standobyte.jojo.entity.stand.StandEntityType;
 import com.github.standobyte.jojo.init.power.stand.EntityStandRegistryObject;
-import com.github.standobyte.jojo.init.power.stand.ModStandsInit;
 import com.github.standobyte.jojo.power.impl.stand.StandInstance.StandPart;
 import com.github.standobyte.jojo.power.impl.stand.stats.StandStats;
 import com.github.standobyte.jojo.power.impl.stand.type.EntityStandType;
 import com.github.standobyte.jojo.power.impl.stand.type.StandType;
+import com.github.standobyte.jojo.util.mod.StoryPart;
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
-import com.ht_dq.rotp_kingcrimson.action.KingCrimsonChop;
-import com.ht_dq.rotp_kingcrimson.action.KingCrimsonEpitaph;
-import com.ht_dq.rotp_kingcrimson.action.KingCrimsonGroundPunch;
-import com.ht_dq.rotp_kingcrimson.action.KingCrimsonImpale;
-import com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase;
-import com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeSkip;
+import com.ht_dq.rotp_kingcrimson.action.*;
 import com.ht_dq.rotp_kingcrimson.entity.stand.stands.KingCrimsonEntity;
-
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 
@@ -90,6 +79,13 @@ public class InitStands {
                     .shiftVariationOf(KINGCRIMSON_CHOP)
                     .partsRequired(StandPart.MAIN_BODY)));
 
+//    public static final RegistryObject<KingCrimsonBloodThrow> KINGCRIMSON_BLOOD_THROW = ACTIONS.register("kingcrimson_blood_throw",
+//            () -> new KingCrimsonBloodThrow(new KingCrimsonBloodThrow.Builder()
+//                    .cooldown(150)
+//                    .staminaCost(200)
+//                    .resolveLevelToUnlock(1)
+//                    .shout(InitSounds.KINGCRIMSON_BLOODTHROW)
+//                    .partsRequired(StandPart.MAIN_BODY)));
 
     public static final RegistryObject<StandEntityAction> KINGCRIMSON_BLOCK = ACTIONS.register("kingcrimson_block",
             () -> new StandEntityBlock());
@@ -130,7 +126,7 @@ public class InitStands {
                     STANDS,
                     () -> new EntityStandType.Builder<>()
                             .color(0xCF2F50)
-                            .storyPartName(ModStandsInit.PART_5_NAME)
+                            .storyPartName(StoryPart.GOLDEN_WIND.getName())
                             .leftClickHotbar(
                                     KINGCRIMSON_PUNCH.get(),
                                     KINGCRIMSON_BARRAGE.get(),
@@ -141,10 +137,9 @@ public class InitStands {
                                     KINGCRIMSON_EPITAPH.get(),
                                     KINGCRIMSON_TIMESKIP.get(),
                                     KINGCRIMSON_TIMEERASE.get()
-
                             )
+                            .defaultKey(KINGCRIMSON_TIMEERASE.get(), "key.keyboard.c") // key V to time erase
                             .defaultStats(StandStats.class, new StandStats.Builder()
-                                    .tier(6)
                                     .power(18.0)
                                     .speed(14.0)
                                     .range(2, 3)
@@ -157,7 +152,7 @@ public class InitStands {
                             .build(),
 
                     InitEntities.ENTITIES,
-                    () -> new StandEntityType<KingCrimsonEntity>(KingCrimsonEntity::new, 0.65F, 1.95F)
+                    () -> new StandEntityType<>(KingCrimsonEntity::new, 0.65F, 1.95F)
                             .summonSound(InitSounds.KINGCRIMSON_SUMMON)
                             .unsummonSound(InitSounds.KINGCRIMSON_UNSUMMON))
                     .withDefaultStandAttributes();

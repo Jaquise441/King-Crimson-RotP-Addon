@@ -3,22 +3,21 @@ package com.ht_dq.rotp_kingcrimson.client.render.entity.model.stand;
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.client.render.entity.model.stand.HumanoidStandModel;
 import com.github.standobyte.jojo.client.render.entity.pose.ModelPose;
+import com.github.standobyte.jojo.client.render.entity.pose.ModelPoseTransitionMultiple;
 import com.github.standobyte.jojo.client.render.entity.pose.RotationAngle;
 import com.github.standobyte.jojo.client.render.entity.pose.anim.PosedActionAnimation;
+import com.github.standobyte.jojo.entity.stand.StandPose;
 import com.ht_dq.rotp_kingcrimson.action.KingCrimsonChop;
 import com.ht_dq.rotp_kingcrimson.action.KingCrimsonImpale;
 import com.ht_dq.rotp_kingcrimson.entity.stand.stands.KingCrimsonEntity;
 import net.minecraft.client.renderer.model.ModelRenderer;
-
-import com.github.standobyte.jojo.client.render.entity.pose.ModelPoseTransitionMultiple;
-import com.github.standobyte.jojo.entity.stand.StandPose;
 
 // Made with Blockbench 4.8.3
 // Exported for Minecraft version 1.15 - 1.16 with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
 
-public class KingCrimson extends HumanoidStandModel<KingCrimsonEntity> {
+public class KingCrimsonModel extends HumanoidStandModel<KingCrimsonEntity> {
 	private final ModelRenderer epitaph;
 	private final ModelRenderer head_r1;
 	private final ModelRenderer head_r2;
@@ -43,7 +42,7 @@ public class KingCrimson extends HumanoidStandModel<KingCrimsonEntity> {
 	private final ModelRenderer bone11;
 	private final ModelRenderer rightLowerLeg_r1;
 
-	public KingCrimson() {
+	public KingCrimsonModel() {
 		super();
 		addHumanoidBaseBoxes(null);
 

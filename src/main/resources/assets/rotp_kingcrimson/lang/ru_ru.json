@@ -13,7 +13,9 @@
   "action.rotp_kingcrimson.kingcrimson_timeskip": "Вырезание Времени",
   "action.rotp_kingcrimson.kingcrimson_epitaph": "Эпитафия",
   "action.rotp_kingcrimson.kingcrimson_timeerase": "Стирание Времени",
-  "action.rotp_kingcrimson.kingcrimson_conceal_identity": "Скрытие Имени",
 
+  "effect.rotp_kingcrimson.bleeding": "Кровотечение",
+  "effect.rotp_kingcrimson.mangled_body": "Искалеченное тело",
+  "effect.rotp_kingcrimson.gaping_wound": "Зияющая рана",
   "rotp_kingcrimson.subtitle.kingcrimson_name": "\"King Crimson\""
 }

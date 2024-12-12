@@ -1,10 +1,5 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
-import java.util.Optional;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectInstance;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectType;
@@ -16,7 +11,6 @@ import com.ht_dq.rotp_kingcrimson.client.render.vfx.EpitaphVFX;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.init.InitStandEffects;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
-
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -32,6 +26,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class KingCrimsonEpitaph extends StandEntityAction {
     private static final int EFFECT_DURATION = 60;
@@ -129,41 +126,10 @@ public class KingCrimsonEpitaph extends StandEntityAction {
         }
         
         
-        public void onLivingAttack(LivingAttackEvent event) {
-            DamageSource source = event.getSource();
-            Entity attacker = source.getEntity();
-
-            if (userPower.getResolveLevel() < 3) {
-                if (source.isExplosion() || (attacker instanceof MobEntity && attacker.getType().getRegistryName().toString().contains("creeper"))) {
-                    return;
-                }
-            }
-
-            if (!(source == DamageSource.FALL)) {
-                event.setCanceled(true);
-
-                if (userPower.getResolveLevel() >= 3) {
-                    if (attacker instanceof StandEntity) {
-                        handleEpitaphTeleportBehind(user, ((StandEntity) attacker).getUser());
-                    } else {
-                        handleEpitaphTeleport(user, attacker);
-                    }
-
-                    if (attacker instanceof LivingEntity) {
-                        applyAfterEpitaphEffect((LivingEntity) attacker);
-                    }
-                } else {
-                    handleDashBackward(user, attacker);
-                }
-
-                this.remove();
-            }
-        }
-
-        private static void handleDashBackward(LivingEntity player, @Nullable Entity attacker) {
-            World world = player.level;
-            Vector3d currentPosition = player.position();
-            Vector3d backwardDirection = player.getLookAngle().scale(-1).normalize();
+        private static void handleDashBackward(LivingEntity livingEntity, @Nullable Entity attacker) {
+            World world = livingEntity.level;
+            Vector3d currentPosition = livingEntity.position();
+            Vector3d backwardDirection = livingEntity.getLookAngle().scale(-1).normalize();
 
             Vector3d lastValidPosition = currentPosition;
             boolean obstacleDetected = false;
@@ -186,7 +152,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             }
 
             if (obstacleDetected && attacker != null) {
-                Vector3d sidewaysDirection = getSidewaysDashDirection(player, attacker);
+                Vector3d sidewaysDirection = getSidewaysDashDirection(livingEntity, attacker);
                 Vector3d sidewaysPosition = currentPosition.add(sidewaysDirection.scale(2));
                 BlockPos sidewaysBlockPos = new BlockPos(sidewaysPosition);
 
@@ -195,19 +161,19 @@ public class KingCrimsonEpitaph extends StandEntityAction {
                 }
             }
 
-            player.teleportTo(lastValidPosition.x, lastValidPosition.y, lastValidPosition.z);
+            livingEntity.teleportTo(lastValidPosition.x, lastValidPosition.y, lastValidPosition.z);
 
-            player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, 10, 1, false, false));
-            playSound(player, InitSounds.DIAVOLO_DASH.get());
-            playSound(player, InitSounds.KINGCRIMSON_DASH.get());
+            livingEntity.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, 10, 1, false, false));
+            playSound(livingEntity, InitSounds.DIAVOLO_DASH.get());
+            playSound(livingEntity, InitSounds.KINGCRIMSON_DASH.get());
         }
 
-        private static Vector3d getSidewaysDashDirection(LivingEntity player, Entity attacker) {
+        private static Vector3d getSidewaysDashDirection(LivingEntity livingEntity, Entity attacker) {
             Vector3d attackerPosition = attacker.position();
-            Vector3d playerPosition = player.position();
+            Vector3d position = livingEntity.position();
 
-            Vector3d directionToAttacker = attackerPosition.subtract(playerPosition).normalize();
-            Vector3d lookDirection = player.getLookAngle().normalize();
+            Vector3d directionToAttacker = attackerPosition.subtract(position).normalize();
+            Vector3d lookDirection = livingEntity.getLookAngle().normalize();
 
             Vector3d rightDirection = lookDirection.cross(new Vector3d(0, 1, 0));
             Vector3d leftDirection = rightDirection.scale(-1);
@@ -219,36 +185,40 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             }
         }
 
-        private static void handleEpitaphTeleport(LivingEntity player, @Nullable Entity attacker) {
+        private static void handleEpitaphTeleport(LivingEntity livingEntity, @Nullable Entity attacker) {
             if (attacker instanceof LivingEntity) {
                 LivingEntity livingAttacker = (LivingEntity) attacker;
 
-                VFXServerHelper.startVFX(player, true);
+                VFXServerHelper.startVFX(livingEntity, true);
 
-                double distanceToAttacker = player.position().distanceTo(livingAttacker.position());
+                double distanceToAttacker = livingEntity.position().distanceTo(livingAttacker.position());
 
                 if (distanceToAttacker > 25.0) {
-                    Vector3d direction = livingAttacker.position().subtract(player.position()).normalize();
-                    Vector3d teleportPosition = player.position().add(direction.scale(25.0));
+                    Vector3d direction = livingAttacker.position().subtract(livingEntity.position()).normalize();
+                    Vector3d teleportPosition = livingEntity.position().add(direction.scale(25.0));
 
-                    if (!isPositionClear(player.level, new BlockPos(teleportPosition))) {
-                        teleportPosition = findClearPositionAround(player.level, teleportPosition);
+                    if (!isPositionClear(livingEntity.level, new BlockPos(teleportPosition))) {
+                        teleportPosition = findClearPositionAround(livingEntity.level, teleportPosition);
                     }
-                    player.teleportTo(teleportPosition.x, teleportPosition.y, teleportPosition.z);
+                    livingEntity.teleportTo(teleportPosition.x, teleportPosition.y, teleportPosition.z);
                 } else {
-                    teleportAround(player, livingAttacker);
+                    teleportAround(livingEntity, livingAttacker);
                 }
 
                 applyAfterEpitaphEffect(livingAttacker);
-                playSound(player, InitSounds.EPITAPH_TIMESKIP.get());
+                playSound(livingEntity, InitSounds.EPITAPH_TIMESKIP.get());
             }
         }
 
-        private static void handleEpitaphTeleportBehind(LivingEntity player, @Nullable Entity standUser) {
+        private static void handleEpitaphTeleportBehind(LivingEntity livingEntity, @Nullable Entity standUser) {
             if (standUser instanceof LivingEntity) {
                 LivingEntity livingUser = (LivingEntity) standUser;
-                teleportAround(player, livingUser);
+                teleportAround(livingEntity, livingUser);
             }
+        }
+
+        private static void playSound(LivingEntity livingEntity, SoundEvent sound) {
+            livingEntity.level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
         }
 
         private static void teleportAround(LivingEntity player, LivingEntity target) {
@@ -266,8 +236,6 @@ public class KingCrimsonEpitaph extends StandEntityAction {
         }
 
         private static Vector3d searchForClearSpot(World world, Vector3d targetPosition, Vector3d lookDirection) {
-            Random rand = new Random();
-
             Vector3d left = targetPosition.add(lookDirection.cross(new Vector3d(0, 1, 0)).scale(TELEPORT_DISTANCE));
             Vector3d right = targetPosition.add(lookDirection.cross(new Vector3d(0, 1, 0)).scale(-TELEPORT_DISTANCE));
 
@@ -317,13 +285,39 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             return !isBlockSolid(world, pos) && !isBlockSolid(world, pos.above()) && !isBlockSolid(world, pos.above(2));
         }
 
-        private static void playSound(LivingEntity player, SoundEvent sound) {
-            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        public void onLivingAttack(LivingAttackEvent event) {
+            DamageSource source = event.getSource();
+            Entity attacker = source.getEntity();
+
+            if (userPower.getResolveLevel() < 3) {
+                if (source.isExplosion() || (attacker instanceof MobEntity && attacker.getType().getRegistryName().toString().contains("creeper"))) {
+                    return;
+                }
+            }
+
+            if (!(source == DamageSource.FALL)) {
+                event.setCanceled(true);
+
+                if (userPower.getResolveLevel() >= 3) {
+                    if (attacker instanceof StandEntity && ((StandEntity) attacker).getUser() != null) {
+                        handleEpitaphTeleportBehind(user, ((StandEntity) attacker).getUser());
+                    } else {
+                        handleEpitaphTeleport(user, attacker);
+                    }
+
+                    if (attacker instanceof LivingEntity) {
+                        applyAfterEpitaphEffect((LivingEntity) attacker);
+                    }
+                } else {
+                    handleDashBackward(user, attacker);
+                }
+
+                this.remove();
+            }
         }
 
         private static void applyAfterEpitaphEffect(LivingEntity target) {
             target.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 20, 1, false, false));
         }
     }
-
 }

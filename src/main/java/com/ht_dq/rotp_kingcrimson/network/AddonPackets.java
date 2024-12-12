@@ -4,7 +4,6 @@ import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
 import com.ht_dq.rotp_kingcrimson.network.server.PlayerTimerActivePacket;
 import com.ht_dq.rotp_kingcrimson.network.server.RemoveTimerActivePacket;
 import com.ht_dq.rotp_kingcrimson.network.server.TimerPutPacket;
-import com.ht_dq.rotp_kingcrimson.network.server.TrLivingDataPacket;
 import com.ht_dq.rotp_kingcrimson.network.server.VFXPlayerTick;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -37,11 +36,6 @@ public class AddonPackets {
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         channel.registerMessage(packetIndex++, PlayerTimerActivePacket.class,
                 PlayerTimerActivePacket::encode,PlayerTimerActivePacket::decode,PlayerTimerActivePacket::handle,
-                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-        channel.registerMessage(packetIndex++, TrLivingDataPacket.class,
-                (msg, buffer) -> TrLivingDataPacket.encode(msg, buffer),
-                buffer -> TrLivingDataPacket.decode(buffer),
-                (msg, ctxSupplier) -> TrLivingDataPacket.handle(msg, ctxSupplier),
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         channel.registerMessage(packetIndex++, RemoveTimerActivePacket.class,
                 RemoveTimerActivePacket::encode,RemoveTimerActivePacket::decode,RemoveTimerActivePacket::handle,
