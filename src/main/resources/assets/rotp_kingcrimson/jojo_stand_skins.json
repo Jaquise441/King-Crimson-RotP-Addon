@@ -1,18 +1,18 @@
 {
   "skins": {
-    "rotp_kingcrimson:SkinA": {
+    "rotp_kingcrimson:skina": {
       "stand_type": "rotp_kingcrimson:kingcrimson",
       "color" : "0xD90F13"
     },
-    "rotp_kingcrimson:SkinB": {
+    "rotp_kingcrimson:skinb": {
       "stand_type": "rotp_kingcrimson:kingcrimson",
       "color" : "0xFDFD5E"
     },
-    "rotp_kingcrimson:SkinC": {
+    "rotp_kingcrimson:skinc": {
       "stand_type": "rotp_kingcrimson:kingcrimson",
       "color" : "0xE079FA"
     },
-    "rotp_kingcrimson:SkinD": {
+    "rotp_kingcrimson:skind": {
       "stand_type": "rotp_kingcrimson:kingcrimson",
       "color" : "0x82BA74"
     }
