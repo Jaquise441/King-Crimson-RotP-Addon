@@ -7,9 +7,10 @@
   "mixins": [
   ],
   "client": [
-    "WorldRendererMixin",
+    "ClientWorldMixin",
+    "TexturedParticleMixin",
     "TileEntityRendererDispatcherMixin",
-    "TexturedParticleMixin"
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

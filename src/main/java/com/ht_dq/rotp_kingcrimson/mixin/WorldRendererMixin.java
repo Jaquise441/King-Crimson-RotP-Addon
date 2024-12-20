@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.WorldRenderer;
 
 @Mixin(WorldRenderer.class)
 public class WorldRendererMixin {
-
     @Inject(method = "renderChunkLayer", at = @At("HEAD"), cancellable = true)
     private void jojoTimeEraseCancelBlocksRender(CallbackInfo ci) {
         if (ClientEventHandler.isErasingTime()) {
@@ -23,5 +22,4 @@ public class WorldRendererMixin {
             ci.cancel();
         }
     }
-
 }

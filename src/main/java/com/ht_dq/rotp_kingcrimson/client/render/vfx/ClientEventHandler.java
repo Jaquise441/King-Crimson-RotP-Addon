@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -118,7 +119,11 @@ public class ClientEventHandler {
                 mc.player.hasEffect(Effects.DIG_SLOWDOWN);
     }
     
-    
+    public static boolean isPlayerErasingTime(PlayerEntity player) {
+        return player.hasEffect(Effects.LUCK) &&
+                player.hasEffect(ModStatusEffects.FULL_INVISIBILITY.get()) &&
+                player.hasEffect(Effects.DIG_SLOWDOWN);
+    }
     
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
