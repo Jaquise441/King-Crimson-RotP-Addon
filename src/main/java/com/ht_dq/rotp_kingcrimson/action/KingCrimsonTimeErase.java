@@ -117,7 +117,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
     @Override
     protected void onTaskStopped(World world, StandEntity standEntity, IStandPower standPower, StandEntityTask task, StandEntityAction newAction) {
-        PlayerEntity player = (PlayerEntity) standEntity.getUser();
+        LivingEntity player = standPower.getUser();
         if (player != null) {
             UUID playerId = player.getUUID();
             if (player instanceof ServerPlayerEntity) {
@@ -226,19 +226,27 @@ public class KingCrimsonTimeErase extends StandEntityAction {
         kingCrimsonUser.connection.send(metadataPacket);
     }
 
-    private void applyInvulnerability(PlayerEntity player) {
-        if (!player.isCreative()) {
-            player.abilities.invulnerable = true;
+    private void applyInvulnerability(LivingEntity user) {
+        setInvulnerability(user, true);
+    }
+
+    private void removeInvulnerability(LivingEntity user) {
+        setInvulnerability(user, false);
+    }
+    
+    private void setInvulnerability(LivingEntity user, boolean invulnerable) {
+        if (user instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) user;
+            if (!player.isCreative()) {
+                player.abilities.invulnerable = invulnerable;
+            }
+        }
+        else {
+            user.setInvulnerable(invulnerable);
         }
     }
 
-    private void removeInvulnerability(PlayerEntity player) {
-        if (!player.isCreative()) {
-            player.abilities.invulnerable = false;
-        }
-    }
-
-    private void applyEffects(PlayerEntity player, StandEntity standEntity, boolean start) {
+    private void applyEffects(LivingEntity player, StandEntity standEntity, boolean start) {
         if (start) {
             player.addEffect(new EffectInstance(Effects.INVISIBILITY, MAX_DURATION, 0, false, false));
             player.addEffect(new EffectInstance(Effects.LUCK, MAX_DURATION, 0, false, false));
@@ -261,7 +269,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
         }
     }
 
-    private static void playSound(PlayerEntity player, SoundEvent sound, boolean forKingCrimsonUserOnly) {
+    private static void playSound(LivingEntity player, SoundEvent sound, boolean forKingCrimsonUserOnly) {
         if (player instanceof ServerPlayerEntity) {
             ServerWorld world = (ServerWorld) player.level;
             Vector3d position = player.position();
@@ -276,7 +284,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
         }
     }
 
-    private static void stopSound(PlayerEntity player, SoundEvent sound) {
+    private static void stopSound(LivingEntity player, SoundEvent sound) {
         if (player instanceof ServerPlayerEntity) {
             ((ServerPlayerEntity) player).connection.send(new SStopSoundPacket(sound.getRegistryName(), SoundCategory.PLAYERS));
         }
