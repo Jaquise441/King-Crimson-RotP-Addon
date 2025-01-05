@@ -10,10 +10,10 @@ import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.github.standobyte.jojo.power.impl.stand.StandEffectsTracker;
-import com.ht_dq.rotp_kc.client.render.vfx.EpitaphVFX;
-import com.ht_dq.rotp_kc.init.InitSounds;
-import com.ht_dq.rotp_kc.init.InitStandEffects;
-import com.ht_dq.rotp_kc.util.VFXServerHelper;
+import com.ht_dq.rotp_kingcrimson.client.render.vfx.EpitaphVFX;
+import com.ht_dq.rotp_kingcrimson.init.InitSounds;
+import com.ht_dq.rotp_kingcrimson.init.InitStandEffects;
+import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.Entity;
