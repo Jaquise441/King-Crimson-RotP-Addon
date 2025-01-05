@@ -115,7 +115,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
         @Override
         protected void tick() {
             if (user.level.isClientSide()) {
-                EpitaphVFX.playerTick();
+                EpitaphVFX.playerTick(userPower.getUser());
             }
             
         }
