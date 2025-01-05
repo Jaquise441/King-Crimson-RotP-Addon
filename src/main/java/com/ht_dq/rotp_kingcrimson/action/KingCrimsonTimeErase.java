@@ -17,14 +17,15 @@ import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.github.standobyte.jojo.util.mc.MCUtil;
-import com.ht_dq.rotp_kc.init.InitSounds;
-import com.ht_dq.rotp_kc.network.AddonPackets;
-import com.ht_dq.rotp_kc.network.server.KingCrimsonDimensionChangeHandler;
-import com.ht_dq.rotp_kc.network.server.PlayerTimerActivePacket;
-import com.ht_dq.rotp_kc.network.server.RemoveTimerActivePacket;
-import com.ht_dq.rotp_kc.util.VFXServerHelper;
+import com.ht_dq.rotp_kingcrimson.init.InitSounds;
+import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
+import com.ht_dq.rotp_kingcrimson.network.server.KingCrimsonDimensionChangeHandler;
+import com.ht_dq.rotp_kingcrimson.network.server.PlayerTimerActivePacket;
+import com.ht_dq.rotp_kingcrimson.network.server.RemoveTimerActivePacket;
+import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -47,6 +48,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -335,9 +338,10 @@ public class KingCrimsonTimeErase extends StandEntityAction {
         }
 
         @SubscribeEvent
+        @OnlyIn(Dist.CLIENT)
         public static void onRenderWorldLast(RenderWorldLastEvent event) {
             Minecraft mc = Minecraft.getInstance();
-            PlayerEntity player = mc.player;
+            ClientPlayerEntity player = mc.player;
 
             if (player != null && playerTimeEraseActive.containsKey(player.getUUID())
                     && Boolean.TRUE.equals(playerTimeEraseActive.get(player.getUUID()))
