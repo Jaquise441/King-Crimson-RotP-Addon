@@ -93,32 +93,31 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
     @Override
     public void standPerform(World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
-        if (!world.isClientSide()) {
-            ServerPlayerEntity player = (ServerPlayerEntity) standEntity.getUser();
-            if (player != null) {
-                new KingCrimsonDimensionChangeHandler(player);
-                isTimeEraseActive = true;
-                UUID playerId = player.getUUID();
-                playerTimeEraseActive.put(playerId, true);
+        if (!world.isClientSide() && userPower.getUser() instanceof ServerPlayerEntity) {
+            PlayerEntity player = (PlayerEntity) userPower.getUser();
+            
+            new KingCrimsonDimensionChangeHandler(player);
+            isTimeEraseActive = true;
+            UUID playerId = player.getUUID();
+            playerTimeEraseActive.put(playerId, true);
 
-                if (userPower.getUser() instanceof ServerPlayerEntity) {
-                    AddonPackets.sendToClientsTrackingAndSelf(new PlayerTimerActivePacket(playerId, true), player);
-                }
-                dimensionChangeHandlers.put(playerId, new KingCrimsonDimensionChangeHandler(player));
-                applyEffects(player, standEntity, true);
-                createAfterimages(player);
-                disablePiglinAggression(player);
-                MinecraftForge.EVENT_BUS.register(new TimeEraseHandler(player.getUUID(), standEntity, userPower, task));
-                playSound(player, InitSounds.TIME_ERASE_START.get(), true);
-                VFXServerHelper.startVFX(player, false);
+            if (player instanceof ServerPlayerEntity) {
+                AddonPackets.sendToClientsTrackingAndSelf(new PlayerTimerActivePacket(playerId, true), player);
             }
+            dimensionChangeHandlers.put(playerId, new KingCrimsonDimensionChangeHandler(player));
+            applyEffects(player, standEntity, true);
+            createAfterimages((ServerPlayerEntity) player);
+            disablePiglinAggression((ServerPlayerEntity) player);
+            MinecraftForge.EVENT_BUS.register(new TimeEraseHandler(player.getUUID(), standEntity, userPower, task));
+            playSound(player, InitSounds.TIME_ERASE_START.get(), true);
+            VFXServerHelper.startVFX(player, false);
         }
     }
 
     @Override
     protected void onTaskStopped(World world, StandEntity standEntity, IStandPower standPower, StandEntityTask task, StandEntityAction newAction) {
-        PlayerEntity player = (PlayerEntity) standEntity.getUser();
-        if (player != null) {
+        if (standPower.getUser() instanceof PlayerEntity && !world.isClientSide()) {
+            PlayerEntity player = (PlayerEntity) standPower.getUser();
             UUID playerId = player.getUUID();
             if (player instanceof ServerPlayerEntity) {
                 if (Boolean.TRUE.equals(playerTimeEraseActive.get(playerId))) {

@@ -30,6 +30,7 @@ public class KingCrimsonTimeSkip extends StandEntityAction {
     @Override
     public void standPerform(World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
         LivingEntity player = userPower.getUser();
+        if (player == null) return;
 
         VFXServerHelper.startVFX(player, true);
 

@@ -1,5 +1,9 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectInstance;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectType;
@@ -11,6 +15,7 @@ import com.ht_dq.rotp_kingcrimson.client.render.vfx.EpitaphVFX;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.init.InitStandEffects;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
+
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -27,15 +32,11 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import javax.annotation.Nullable;
-import java.util.Optional;
-
 public class KingCrimsonEpitaph extends StandEntityAction {
     private static final int EFFECT_DURATION = 60;
     private static final int SLOWNESS_LEVEL = 1;
     private static final double TELEPORT_DISTANCE = 3.0;
-    private static final double DASH_BACKWARD_DISTANCE = 2.0;
-
+    
     public KingCrimsonEpitaph(AbstractBuilder<?> builder) {
         super(builder);
     }
