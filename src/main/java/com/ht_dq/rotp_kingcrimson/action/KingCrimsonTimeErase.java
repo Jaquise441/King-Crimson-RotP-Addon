@@ -1,5 +1,6 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,12 +16,13 @@ import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
-import com.ht_dq.rotp_kingcrimson.init.InitSounds;
-import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
-import com.ht_dq.rotp_kingcrimson.network.server.KingCrimsonDimensionChangeHandler;
-import com.ht_dq.rotp_kingcrimson.network.server.PlayerTimerActivePacket;
-import com.ht_dq.rotp_kingcrimson.network.server.RemoveTimerActivePacket;
-import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
+import com.github.standobyte.jojo.util.mc.MCUtil;
+import com.ht_dq.rotp_kc.init.InitSounds;
+import com.ht_dq.rotp_kc.network.AddonPackets;
+import com.ht_dq.rotp_kc.network.server.KingCrimsonDimensionChangeHandler;
+import com.ht_dq.rotp_kc.network.server.PlayerTimerActivePacket;
+import com.ht_dq.rotp_kc.network.server.RemoveTimerActivePacket;
+import com.ht_dq.rotp_kc.util.VFXServerHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -65,7 +67,10 @@ public class KingCrimsonTimeErase extends StandEntityAction {
     private final Map<Entity, AfterimageEntity> afterimages = new HashMap<>();
     private final Map<Entity, AfterimageEntity> stationaryAfterimages = new HashMap<>();
     private final Map<Entity, Boolean> originalPiglinAggression = new HashMap<>();
-
+    private final int delay = 60;
+    private final Map<Entity, ArrayList<Vector3d>> POSITIONS = new HashMap<>();
+    private final Map<Entity, ArrayList<Float>> YROT = new HashMap<>();
+    private final Map<Entity,ArrayList<Float>> XROT = new HashMap<>();
     public KingCrimsonTimeErase(Builder builder) {
         super(builder);
     }
@@ -88,6 +93,19 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             if (userPower.getStamina() <= 0) {
                 userPower.stopHeldAction(false);
             }
+
+            stationaryAfterimages.forEach((entity, afterimage) -> {
+                POSITIONS.putIfAbsent(entity, new ArrayList<>());
+                POSITIONS.get(entity).add(entity.position());
+
+                YROT.putIfAbsent(entity, new ArrayList<>());
+                YROT.get(entity).add(entity.yRot);
+
+                XROT.putIfAbsent(entity, new ArrayList<>());
+                XROT.get(entity).add(entity.xRot);
+
+            });
+
         }
     }
 
@@ -95,7 +113,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
     public void standPerform(World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
         if (!world.isClientSide() && userPower.getUser() instanceof ServerPlayerEntity) {
             PlayerEntity player = (PlayerEntity) userPower.getUser();
-            
+
             new KingCrimsonDimensionChangeHandler(player);
             isTimeEraseActive = true;
             UUID playerId = player.getUUID();
@@ -130,8 +148,13 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     removeAfterimages((ServerPlayerEntity) player);
                     stationaryAfterimages.forEach((entity, afterimage) -> {
                         if (entity.isAlive()) {
-                            Vector3d finalPos = afterimage.position();
-                            entity.teleportTo(finalPos.x, finalPos.y, finalPos.z);
+                            Vector3d finalPos = POSITIONS.get(entity).get(Math.max(0,POSITIONS.get( entity).size()-delay));
+                            float rotY = YROT.get(entity).get(Math.max(0,YROT.get( entity).size()-delay));
+                            float rotX = XROT.get(entity).get(Math.max(0,XROT.get( entity).size()-delay));
+                            MCUtil.runCommand((LivingEntity) entity,"tp @s "+finalPos.x+" "+finalPos.y+" "+finalPos.z+" "+rotY+" "+rotX);
+                            POSITIONS.remove(entity);
+                            XROT.remove(entity);
+                            YROT.remove(entity);
                         }
                     });
                     removeStationaryAfterimages((ServerPlayerEntity) player);
