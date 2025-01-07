@@ -22,6 +22,7 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -144,7 +145,10 @@ public class KingCrimsonEpitaph extends StandEntityAction {
                 }
             }
 
-            player.level.getServer().execute(() -> removeInvulnerability(player));
+            MinecraftServer server = player.level.getServer();
+            if (server != null){
+                server.execute(() -> removeInvulnerability(player));
+            }
         }
 
         private static void applyInvulnerability(LivingEntity living) {
