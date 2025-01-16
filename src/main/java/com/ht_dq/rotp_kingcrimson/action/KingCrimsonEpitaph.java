@@ -1,5 +1,8 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
+import java.util.Optional;
+import javax.annotation.Nullable;
+
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectInstance;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectType;
@@ -11,12 +14,15 @@ import com.ht_dq.rotp_kingcrimson.client.render.vfx.EpitaphVFX;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.init.InitStandEffects;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
+
 import net.minecraft.command.arguments.EntityAnchorArgument;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -27,14 +33,12 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import javax.annotation.Nullable;
-import java.util.Optional;
+import java.util.List;
 
 public class KingCrimsonEpitaph extends StandEntityAction {
     private static final int EFFECT_DURATION = 60;
     private static final int SLOWNESS_LEVEL = 1;
     private static final double TELEPORT_DISTANCE = 3.0;
-    private static final double DASH_BACKWARD_DISTANCE = 2.0;
 
     public KingCrimsonEpitaph(AbstractBuilder<?> builder) {
         super(builder);
@@ -112,7 +116,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
         @Override
         protected void tick() {
             if (user.level.isClientSide()) {
-                EpitaphVFX.playerTick();
+                EpitaphVFX.playerTick(userPower.getUser());
             }
             
         }
@@ -124,8 +128,52 @@ public class KingCrimsonEpitaph extends StandEntityAction {
         protected boolean needsTarget() {
             return false;
         }
-        
-        
+
+
+        private static void applyEpitaphTimeSkip(LivingEntity player, LivingEntity attacker) {
+            World world = player.level;
+            List<Entity> entities = world.getEntities(player, player.getBoundingBox().inflate(32), entity ->
+                    entity instanceof LivingEntity &&
+                            !entity.getUUID().equals(player.getUUID()) &&
+                            !entity.getUUID().equals(attacker.getUUID()));
+
+            applyInvulnerability(player);
+
+            for (int i = 0; i < 40; i++) {
+                for (Entity entity : entities) {
+                    entity.tick();
+                }
+            }
+
+            MinecraftServer server = player.level.getServer();
+            if (server != null){
+                server.execute(() -> removeInvulnerability(player));
+            }
+        }
+
+        private static void applyInvulnerability(LivingEntity living) {
+            if(living instanceof PlayerEntity){
+                PlayerEntity player = (PlayerEntity) living;
+                if (!player.isCreative()) {
+                    player.abilities.invulnerable = true;
+                }
+            }
+            else {
+                living.setInvulnerable(true);
+            }
+        }
+
+        private static void removeInvulnerability(LivingEntity living) {
+            if(living instanceof PlayerEntity){
+                PlayerEntity player = (PlayerEntity) living;
+                if (!player.isCreative()) {
+                    player.abilities.invulnerable = false;
+                }
+            }else {
+                living.setInvulnerable(false);
+            }
+        }
+
         private static void handleDashBackward(LivingEntity livingEntity, @Nullable Entity attacker) {
             World world = livingEntity.level;
             Vector3d currentPosition = livingEntity.position();
@@ -204,6 +252,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
                 } else {
                     teleportAround(livingEntity, livingAttacker);
                 }
+                applyEpitaphTimeSkip(livingEntity, livingAttacker);
 
                 applyAfterEpitaphEffect(livingAttacker);
                 playSound(livingEntity, InitSounds.EPITAPH_TIMESKIP.get());
@@ -311,6 +360,7 @@ public class KingCrimsonEpitaph extends StandEntityAction {
                 } else {
                     handleDashBackward(user, attacker);
                 }
+                IStandPower.getPlayerStandPower((PlayerEntity) user).stopHeldAction(true);
 
                 this.remove();
             }

@@ -1,6 +1,8 @@
 package com.ht_dq.rotp_kingcrimson.util;
 
+import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.ht_dq.rotp_kingcrimson.client.render.vfx.TimeSkipHandler;
+import com.ht_dq.rotp_kingcrimson.init.InitStands;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import com.ht_dq.rotp_kingcrimson.network.server.TimerPutPacket;
 
@@ -19,7 +21,7 @@ public class VFXServerHelper {
                     startTimeSkipEffect(p, currentTime);
                 }
             }
-        } else if (user instanceof PlayerEntity) {
+        } else if (user instanceof PlayerEntity && IStandPower.getPlayerStandPower((PlayerEntity) user).getType().equals(InitStands.STAND_KINGCRIMSON.getStandType())) {
             startTimeSkipEffect((PlayerEntity) user, currentTime);
         }
     }

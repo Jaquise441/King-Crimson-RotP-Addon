@@ -1,5 +1,6 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
+import com.github.standobyte.jojo.util.mc.MCUtil;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import com.ht_dq.rotp_kingcrimson.network.server.KingCrimsonDimensionChangeHandler;
@@ -23,6 +25,7 @@ import com.ht_dq.rotp_kingcrimson.network.server.RemoveTimerActivePacket;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -45,6 +48,8 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -65,7 +70,10 @@ public class KingCrimsonTimeErase extends StandEntityAction {
     private final Map<Entity, AfterimageEntity> afterimages = new HashMap<>();
     private final Map<Entity, AfterimageEntity> stationaryAfterimages = new HashMap<>();
     private final Map<Entity, Boolean> originalPiglinAggression = new HashMap<>();
-
+    private final int delay = 60;
+    private final Map<Entity, ArrayList<Vector3d>> POSITIONS = new HashMap<>();
+    private final Map<Entity, ArrayList<Float>> YROT = new HashMap<>();
+    private final Map<Entity,ArrayList<Float>> XROT = new HashMap<>();
     public KingCrimsonTimeErase(Builder builder) {
         super(builder);
     }
@@ -88,37 +96,49 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             if (userPower.getStamina() <= 0) {
                 userPower.stopHeldAction(false);
             }
+
+            stationaryAfterimages.forEach((entity, afterimage) -> {
+                POSITIONS.putIfAbsent(entity, new ArrayList<>());
+                POSITIONS.get(entity).add(entity.position());
+
+                YROT.putIfAbsent(entity, new ArrayList<>());
+                YROT.get(entity).add(entity.yRot);
+
+                XROT.putIfAbsent(entity, new ArrayList<>());
+                XROT.get(entity).add(entity.xRot);
+
+            });
+
         }
     }
 
     @Override
     public void standPerform(World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
-        if (!world.isClientSide()) {
-            ServerPlayerEntity player = (ServerPlayerEntity) standEntity.getUser();
-            if (player != null) {
-                new KingCrimsonDimensionChangeHandler(player);
-                isTimeEraseActive = true;
-                UUID playerId = player.getUUID();
-                playerTimeEraseActive.put(playerId, true);
+        LivingEntity user = userPower.getUser();
+        if (!world.isClientSide() && user instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) userPower.getUser();
 
-                if (userPower.getUser() instanceof ServerPlayerEntity) {
-                    AddonPackets.sendToClientsTrackingAndSelf(new PlayerTimerActivePacket(playerId, true), player);
-                }
-                dimensionChangeHandlers.put(playerId, new KingCrimsonDimensionChangeHandler(player));
-                applyEffects(player, standEntity, true);
-                createAfterimages(player);
-                disablePiglinAggression(player);
-                MinecraftForge.EVENT_BUS.register(new TimeEraseHandler(player.getUUID(), standEntity, userPower, task));
-                playSound(player, InitSounds.TIME_ERASE_START.get(), true);
-                VFXServerHelper.startVFX(player, false);
-            }
+            new KingCrimsonDimensionChangeHandler(player);
+            isTimeEraseActive = true;
+            UUID playerId = player.getUUID();
+            playerTimeEraseActive.put(playerId, true);
+
+            AddonPackets.sendToClientsTrackingAndSelf(new PlayerTimerActivePacket(playerId, true), player);
+            dimensionChangeHandlers.put(playerId, new KingCrimsonDimensionChangeHandler(player));
+            applyEffects(player, standEntity, true);
+            createAfterimages(player);
+            disablePiglinAggression(player);
+            MinecraftForge.EVENT_BUS.register(new TimeEraseHandler(player.getUUID(), standEntity, userPower, task));
+            playSound(player, InitSounds.TIME_ERASE_START.get(), true);
+            VFXServerHelper.startVFX(player, false);
         }
     }
 
     @Override
     protected void onTaskStopped(World world, StandEntity standEntity, IStandPower standPower, StandEntityTask task, StandEntityAction newAction) {
-        LivingEntity player = standPower.getUser();
-        if (player != null) {
+        LivingEntity user = standPower.getUser();
+        if (user instanceof PlayerEntity && !world.isClientSide()) {
+            PlayerEntity player = (PlayerEntity) user;
             UUID playerId = player.getUUID();
             if (player instanceof ServerPlayerEntity) {
                 if (Boolean.TRUE.equals(playerTimeEraseActive.get(playerId))) {
@@ -131,8 +151,13 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     removeAfterimages((ServerPlayerEntity) player);
                     stationaryAfterimages.forEach((entity, afterimage) -> {
                         if (entity.isAlive()) {
-                            Vector3d finalPos = afterimage.position();
-                            entity.teleportTo(finalPos.x, finalPos.y, finalPos.z);
+                            Vector3d finalPos = POSITIONS.get(entity).get(Math.max(0,POSITIONS.get( entity).size()-delay));
+                            float rotY = YROT.get(entity).get(Math.max(0,YROT.get( entity).size()-delay));
+                            float rotX = XROT.get(entity).get(Math.max(0,XROT.get( entity).size()-delay));
+                            MCUtil.runCommand((LivingEntity) entity,"tp @s "+finalPos.x+" "+finalPos.y+" "+finalPos.z+" "+rotY+" "+rotX);
+                            POSITIONS.remove(entity);
+                            XROT.remove(entity);
+                            YROT.remove(entity);
                         }
                     });
                     removeStationaryAfterimages((ServerPlayerEntity) player);
@@ -178,7 +203,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     afterimages.put(entity, movingAfterimage);
                     sendAfterimageToPlayer(player, movingAfterimage);
 
-                    AfterimageEntity stationaryAfterimage = new AfterimageEntity(world, (LivingEntity) entity, 60);
+                    AfterimageEntity stationaryAfterimage = new AfterimageEntity(world, (LivingEntity) entity, delay);
                     stationaryAfterimage.setLifeSpan(MAX_DURATION);
                     stationaryAfterimage.setGlowing(true);
                     scoreboard.addPlayerToTeam(stationaryAfterimage.getStringUUID(), finalRedTeam);
@@ -321,9 +346,10 @@ public class KingCrimsonTimeErase extends StandEntityAction {
         }
 
         @SubscribeEvent
+        @OnlyIn(Dist.CLIENT)
         public static void onRenderWorldLast(RenderWorldLastEvent event) {
             Minecraft mc = Minecraft.getInstance();
-            PlayerEntity player = mc.player;
+            ClientPlayerEntity player = mc.player;
 
             if (player != null && playerTimeEraseActive.containsKey(player.getUUID())
                     && Boolean.TRUE.equals(playerTimeEraseActive.get(player.getUUID()))

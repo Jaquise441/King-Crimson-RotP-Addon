@@ -1,6 +1,5 @@
 package com.ht_dq.rotp_kingcrimson.action;
 
-import com.github.standobyte.jojo.action.stand.StandEntityHeavyAttack;
 import com.github.standobyte.jojo.action.stand.StandEntityLightAttack;
 import com.github.standobyte.jojo.action.stand.punch.StandEntityPunch;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
@@ -12,6 +11,7 @@ import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.github.standobyte.jojo.util.mc.damage.StandEntityDamageSource;
 import com.ht_dq.rotp_kingcrimson.init.InitEffects;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.EffectInstance;
