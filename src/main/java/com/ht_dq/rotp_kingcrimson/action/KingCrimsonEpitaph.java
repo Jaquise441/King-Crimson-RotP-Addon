@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectInstance;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectType;
+import com.github.standobyte.jojo.client.ClientUtil;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
@@ -115,8 +116,8 @@ public class KingCrimsonEpitaph extends StandEntityAction {
 
         @Override
         protected void tick() {
-            if (user.level.isClientSide()) {
-                EpitaphVFX.playerTick(userPower.getUser());
+            if (user.level.isClientSide() && user == ClientUtil.getClientPlayer()) {
+                EpitaphVFX.playerTick(user);
             }
             
         }
