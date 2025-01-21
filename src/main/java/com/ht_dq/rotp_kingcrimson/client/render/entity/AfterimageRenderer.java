@@ -1,6 +1,6 @@
 package com.ht_dq.rotp_kingcrimson.client.render.entity;
 
-import com.ht_dq.rotp_kingcrimson.entity.AfterimageEntity;
+import com.ht_dq.rotp_kingcrimson.entity.KCAfterimageEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -20,7 +20,8 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 
-public class AfterimageRenderer<T extends AfterimageEntity> extends EntityRenderer<T> {
+public class AfterimageRenderer<T extends KCAfterimageEntity> extends EntityRenderer<T> {
+    public static boolean isRenderingKCAfterimage = false;
 
     public AfterimageRenderer(EntityRendererManager renderManager) {
         super(renderManager);
@@ -36,17 +37,22 @@ public class AfterimageRenderer<T extends AfterimageEntity> extends EntityRender
         if (!afterimageEntity.isInvisibleTo(Minecraft.getInstance().player)) {
             LivingEntity originEntity = afterimageEntity.getOriginEntity();
             if (originEntity != null) {
-                renderSoul(originEntity, afterimageEntity,
+                if (afterimageEntity.isRedOnly()) {
+                    isRenderingKCAfterimage = true;
+                }
+                renderAfterimage(originEntity, afterimageEntity,
                         yRotation, partialTick, matrixStack, buffer, packedLight);
+                isRenderingKCAfterimage = false;
             }
             super.render(afterimageEntity, yRotation, partialTick, matrixStack, buffer, packedLight);
         }
     }
 
-    private <E extends LivingEntity, M extends EntityModel<E>> void renderSoul(E entity, AfterimageEntity afterimageEntity,
+    private <E extends LivingEntity, M extends EntityModel<E>> void renderAfterimage(E entity, KCAfterimageEntity afterimageEntity,
                                                                                float yRotation, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
         LivingRenderer<E, M> renderer = (LivingRenderer<E, M>) entityRenderDispatcher.getRenderer(entity);
-        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<E, M>(entity, renderer, partialTick, matrixStack, buffer, packedLight))) return;
+        renderer.render(entity, yRotation, partialTick, matrixStack, buffer, packedLight);
+        /*if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<E, M>(entity, renderer, partialTick, matrixStack, buffer, packedLight))) return;
 
         M model = renderer.getModel();
         matrixStack.pushPose();
@@ -76,6 +82,6 @@ public class AfterimageRenderer<T extends AfterimageEntity> extends EntityRender
         }
 
         matrixStack.popPose();
-        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<E, M>(entity, renderer, partialTick, matrixStack, buffer, packedLight));
+        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<E, M>(entity, renderer, partialTick, matrixStack, buffer, packedLight));*/
     }
 }

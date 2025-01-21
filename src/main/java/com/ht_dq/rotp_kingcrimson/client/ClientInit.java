@@ -21,7 +21,7 @@ public class ClientInit {
     public static void onFMLClientSetup(FMLClientSetupEvent event) {
         Minecraft mc = Minecraft.getInstance();
         RenderingRegistry.registerEntityRenderingHandler(AddonStands.KINGCRIMSON.getEntityType(), KingCrimsonRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(InitEntities.AFTERIMAGE.get(), AfterimageRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(InitEntities.KC_AFTERIMAGE.get(), AfterimageRenderer::new);
         event.enqueueWork(() -> {
             ClientEventHandler.init(mc);
             TemporaryDimensionEffects.init();

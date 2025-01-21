@@ -11,12 +11,12 @@ import com.github.standobyte.jojo.action.ActionConditionResult;
 import com.github.standobyte.jojo.action.ActionTarget;
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.capability.world.TimeStopHandler;
-import com.github.standobyte.jojo.entity.AfterimageEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.github.standobyte.jojo.util.mc.MCUtil;
+import com.ht_dq.rotp_kingcrimson.entity.KCAfterimageEntity;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import com.ht_dq.rotp_kingcrimson.network.server.KingCrimsonDimensionChangeHandler;
@@ -67,8 +67,8 @@ public class KingCrimsonTimeErase extends StandEntityAction {
     public static final Map<UUID, Boolean> playerTimeEraseActive = new HashMap<>();
     private final Map<UUID, KingCrimsonDimensionChangeHandler> dimensionChangeHandlers = new HashMap<>();
     private static boolean isTimeEraseActive = false;
-    private final Map<Entity, AfterimageEntity> afterimages = new HashMap<>();
-    private final Map<Entity, AfterimageEntity> stationaryAfterimages = new HashMap<>();
+    private final Map<Entity, KCAfterimageEntity> afterimages = new HashMap<>();
+    private final Map<Entity, KCAfterimageEntity> stationaryAfterimages = new HashMap<>();
     private final Map<Entity, Boolean> originalPiglinAggression = new HashMap<>();
     private final int delay = 60;
     private final Map<Entity, ArrayList<Vector3d>> POSITIONS = new HashMap<>();
@@ -198,12 +198,12 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
         world.getEntities(player, player.getBoundingBox().inflate(RADIUS), entity -> entity instanceof LivingEntity && entity != player)
                 .forEach(entity -> {
-                    AfterimageEntity movingAfterimage = new AfterimageEntity(world, (LivingEntity) entity, 10);
+                    KCAfterimageEntity movingAfterimage = new KCAfterimageEntity(world, (LivingEntity) entity, 10);
                     movingAfterimage.setLifeSpan(MAX_DURATION);
                     afterimages.put(entity, movingAfterimage);
                     sendAfterimageToPlayer(player, movingAfterimage);
 
-                    AfterimageEntity stationaryAfterimage = new AfterimageEntity(world, (LivingEntity) entity, delay);
+                    KCAfterimageEntity stationaryAfterimage = new KCAfterimageEntity(world, (LivingEntity) entity, delay);
                     stationaryAfterimage.setLifeSpan(MAX_DURATION);
                     stationaryAfterimage.setGlowing(true);
                     scoreboard.addPlayerToTeam(stationaryAfterimage.getStringUUID(), finalRedTeam);
@@ -212,7 +212,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                 });
     }
 
-    private void sendAfterimageWithGlowToPlayer(ServerPlayerEntity kingCrimsonUser, AfterimageEntity afterimage) {
+    private void sendAfterimageWithGlowToPlayer(ServerPlayerEntity kingCrimsonUser, KCAfterimageEntity afterimage) {
         IPacket<?> spawnPacket = afterimage.getAddEntityPacket();
         kingCrimsonUser.connection.send(spawnPacket);
 
@@ -243,7 +243,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
         stationaryAfterimages.clear();
     }
 
-    private void sendAfterimageToPlayer(ServerPlayerEntity kingCrimsonUser, AfterimageEntity afterimage) {
+    private void sendAfterimageToPlayer(ServerPlayerEntity kingCrimsonUser, KCAfterimageEntity afterimage) {
         IPacket<?> spawnPacket = afterimage.getAddEntityPacket();
         kingCrimsonUser.connection.send(spawnPacket);
 

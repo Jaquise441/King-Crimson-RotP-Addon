@@ -1,7 +1,8 @@
 package com.ht_dq.rotp_kingcrimson.entity;
 
-import com.github.standobyte.jojo.init.ModEntityTypes;
 import com.github.standobyte.jojo.util.mc.MCUtil;
+import com.ht_dq.rotp_kingcrimson.init.InitEntities;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -21,7 +22,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.UUID;
 
-public class AfterimageEntity extends Entity implements IEntityAdditionalSpawnData {
+public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawnData {
     private LivingEntity originEntity;
     private UUID originUuid;
     private int ticksDelayed;
@@ -30,14 +31,14 @@ public class AfterimageEntity extends Entity implements IEntityAdditionalSpawnDa
     private double speedLowerLimit;
     private Queue<PosData> originPosQueue = new LinkedList<PosData>();
     
-    public AfterimageEntity(World world, LivingEntity originEntity, int delay) {
-        this(ModEntityTypes.AFTERIMAGE.get(), world);
+    public KCAfterimageEntity(World world, LivingEntity originEntity, int delay) {
+        this(InitEntities.KC_AFTERIMAGE.get(), world);
         setOriginEntity(originEntity);
         this.delay = delay;
         this.lifeSpan = 1200;
     }
 
-    public AfterimageEntity(EntityType<?> type, World world) {
+    public KCAfterimageEntity(EntityType<?> type, World world) {
         super(type, world);
         noPhysics = true;
     }
@@ -63,6 +64,11 @@ public class AfterimageEntity extends Entity implements IEntityAdditionalSpawnDa
     
     public boolean shouldRender() {
         return originEntity != null && originEntity.getAttributeValue(Attributes.MOVEMENT_SPEED) >= speedLowerLimit;
+    }
+    
+    /** just in case you'd want only some of them to be red */
+    public boolean isRedOnly() {
+        return true;
     }
     
     @Override
