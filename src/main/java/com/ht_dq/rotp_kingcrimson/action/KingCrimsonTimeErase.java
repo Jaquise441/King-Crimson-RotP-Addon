@@ -17,6 +17,7 @@ import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.github.standobyte.jojo.util.mc.MCUtil;
 import com.ht_dq.rotp_kingcrimson.entity.KCAfterimageEntity;
+import com.ht_dq.rotp_kingcrimson.entity.TimeEraseDecoyEntity;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import com.ht_dq.rotp_kingcrimson.network.server.KingCrimsonDimensionChangeHandler;
@@ -131,6 +132,11 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             MinecraftForge.EVENT_BUS.register(new TimeEraseHandler(player.getUUID(), standEntity, userPower, task));
             playSound(player, InitSounds.TIME_ERASE_START.get(), true);
             VFXServerHelper.startVFX(player, false);
+            
+            TimeEraseDecoyEntity userDecoy = new TimeEraseDecoyEntity(world);
+            userDecoy.copyPosition(user);
+            userDecoy.setKCUser(user);
+            world.addFreshEntity(userDecoy);
         }
     }
 
