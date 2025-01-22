@@ -21,7 +21,8 @@ public class VFXServerHelper {
                     startTimeSkipEffect(p, currentTime);
                 }
             }
-        } else if (user instanceof PlayerEntity && IStandPower.getPlayerStandPower((PlayerEntity) user).getType().equals(InitStands.STAND_KINGCRIMSON.getStandType())) {
+        } else if (user instanceof PlayerEntity && IStandPower.getStandPowerOptional(user).filter(
+                stand -> stand.getType() == InitStands.STAND_KINGCRIMSON.getStandType()).isPresent()) {
             startTimeSkipEffect((PlayerEntity) user, currentTime);
         }
     }
