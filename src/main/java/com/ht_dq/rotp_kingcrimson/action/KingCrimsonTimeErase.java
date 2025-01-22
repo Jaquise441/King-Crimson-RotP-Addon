@@ -134,7 +134,6 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             VFXServerHelper.startVFX(player, false);
             
             TimeEraseDecoyEntity userDecoy = new TimeEraseDecoyEntity(world);
-            userDecoy.copyPosition(user);
             userDecoy.setKCUser(user);
             world.addFreshEntity(userDecoy);
         }

@@ -19,12 +19,11 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-// FIXME update the rotation of the decoy entity and its stand entity immediately
+// FIXME make the mob not rotate its head just because it felt cute
 public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IEntityAdditionalSpawnData {
     private IStandPower decoyStandPower = new StandPower(this);
     private LivingEntity kcUser;
@@ -39,9 +38,32 @@ public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IE
     
     public void setKCUser(LivingEntity user) {
         this.kcUser = user;
-        IStandPower.getStandPowerOptional(kcUser).ifPresent(power -> {
-            decoyStandPower.readNBT((CompoundNBT) power.writeNBT());
-        });
+        if (kcUser != null) {
+            fullCopyPos(user, this);
+            IStandPower.getStandPowerOptional(kcUser).ifPresent(power -> {
+                decoyStandPower.readNBT((CompoundNBT) power.writeNBT());
+            });
+        }
+    }
+    
+    private static void fullCopyPos(LivingEntity src, LivingEntity dest) {
+        dest.copyPosition(src);
+        dest.yHeadRot = src.yHeadRot;
+        dest.yHeadRotO = src.yHeadRotO;
+        dest.yBodyRot = src.yBodyRot;
+        dest.yBodyRotO = src.yBodyRotO;
+        dest.xRot = src.xRot;
+        dest.xRotO = src.xRotO;
+        /* 
+         * this scheisse does not work for player KC users, 
+         * because the player's movement vector in only known on client side,
+         * and for mobs it needs to be set on the server side to work correctly
+         * (pain)
+         */
+//        if (!dest.level.isClientSide()) {
+//            dest.setDeltaMovement(src.getDeltaMovement());
+//            dest.hurtMarked = true;
+//        }
     }
     
     public LivingEntity getKCUser() {
@@ -51,29 +73,45 @@ public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IE
     public void silentSummonStand() {
         StandType<?> KCType = decoyStandPower.getType();
         if (KCType instanceof EntityStandType) {
-            StandEntity standEntity = ((EntityStandType<?>) KCType).getEntityType().create(level);
-            standEntity.copyPosition(this);
-            decoyStandPower.setStandManifestation(standEntity);
-            level.addFreshEntity(standEntity);
-            PacketManager.sendToClientsTrackingAndSelf(new TrSetStandEntityPacket(this.getId(), standEntity.getId()), this);
-        }
-    }
-    
-    private void makeStandEntityLessSus() {
-        if (level.isClientSide() && decoyStandPower.getStandManifestation() instanceof StandEntity) {
-            StandEntity decoyStandEntity = (StandEntity) decoyStandPower.getStandManifestation();
-            if (decoyStandEntity.getStandPose() == StandPose.SUMMON) {
-                decoyStandEntity.setStandPose(StandPose.IDLE);
+            StandEntity decoyStandEntity = ((EntityStandType<?>) KCType).getEntityType().create(level);
+            
+            if (kcUser != null) {
+                IStandPower.getStandPowerOptional(kcUser).ifPresent(power -> {
+                    if (power.getStandManifestation() instanceof StandEntity) {
+                        fullCopyPos((StandEntity) power.getStandManifestation(), decoyStandEntity);
+                    }
+                });
             }
-            decoyStandEntity.overlayTickCount = 999;
-//            if (decoyStandEntity.tickCount == 0) {
-//                Vector3d pos = decoyStandEntity.position();
-//                decoyStandEntity.setPosAndOldPos(pos.x, pos.y, pos.z);
-//                decoyStandEntity.tickCount = 999;
-//            }
+            decoyStandPower.setStandManifestation(decoyStandEntity);
+            
+            decoyStandEntity.summonLockTicks = 0;
+            decoyStandEntity.gradualSummonWeaknessTicks = 0;
+            
+            level.addFreshEntity(decoyStandEntity);
+            PacketManager.sendToClientsTrackingAndSelf(new TrSetStandEntityPacket(this.getId(), decoyStandEntity.getId()), this);
         }
     }
     
+    private boolean makeStandEntityLessSus() {
+        if (decoyStandPower.getStandManifestation() instanceof StandEntity) {
+            StandEntity decoyStandEntity = (StandEntity) decoyStandPower.getStandManifestation();
+            if (decoyStandEntity.tickCount < 999) {
+                decoyStandEntity.tickCount = 999;
+                
+                decoyStandEntity.summonLockTicks = 0;
+                decoyStandEntity.gradualSummonWeaknessTicks = 0;
+                decoyStandEntity.overlayTickCount = 999;
+                if (decoyStandEntity.getStandPose() == StandPose.SUMMON) {
+                    decoyStandEntity.setStandPose(StandPose.IDLE);
+                }
+                
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean clientSusStandFlag = true;
     @Override
     public void tick() {
         super.tick();
@@ -86,7 +124,7 @@ public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IE
                 silentSummonStand();
             }
         }
-        makeStandEntityLessSus();
+        if (clientSusStandFlag && level.isClientSide()) clientSusStandFlag &= !makeStandEntityLessSus();
     }
     
     private boolean isValid() {
