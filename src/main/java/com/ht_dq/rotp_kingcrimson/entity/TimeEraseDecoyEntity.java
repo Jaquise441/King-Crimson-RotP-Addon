@@ -16,6 +16,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.controller.BodyController;
+import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -23,7 +25,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-// FIXME make the mob not rotate its head just because it felt cute
 public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IEntityAdditionalSpawnData {
     private IStandPower decoyStandPower = new StandPower(this);
     private LivingEntity kcUser;
@@ -130,6 +131,27 @@ public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IE
     private boolean isValid() {
         return kcUser != null && IStandPower.getStandPowerOptional(kcUser).resolve().map(
                 power -> power.getHeldAction() == InitStands.KINGCRIMSON_TIMEERASE.get()).orElse(false);
+    }
+
+    /* 
+     * if this mob is gonna have AI in the future, 
+     * these two anonymous classes will probably need some changes, 
+     * it works fine for now
+     */
+    @Override
+    protected void registerGoals() {
+        this.lookControl = new LookController(this) {
+            @Override
+            public void tick() {}
+        };
+    }
+
+    @Override
+    protected BodyController createBodyControl() {
+        return new BodyController(this) {
+            @Override
+            public void clientTick() {}
+        };
     }
     
     @Override
