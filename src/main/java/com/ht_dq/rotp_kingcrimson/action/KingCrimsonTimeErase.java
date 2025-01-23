@@ -15,7 +15,6 @@ import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
-import com.github.standobyte.jojo.util.mc.MCUtil;
 import com.ht_dq.rotp_kingcrimson.entity.KCAfterimageEntity;
 import com.ht_dq.rotp_kingcrimson.entity.TimeEraseDecoyEntity;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
@@ -27,6 +26,7 @@ import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
@@ -45,10 +45,14 @@ import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.TicketType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -147,19 +151,30 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             UUID playerId = player.getUUID();
             if (player instanceof ServerPlayerEntity) {
                 if (Boolean.TRUE.equals(playerTimeEraseActive.get(playerId))) {
+                    ServerWorld serverWorld = (ServerWorld) world;
                     applyEffects(player, standEntity, false);
-                    restorePiglinAggression((ServerWorld) world);
+                    restorePiglinAggression(serverWorld);
                     isTimeEraseActive = false;
                     playSound(player, InitSounds.TIME_ERASE_END.get(), false);
                     stopSound(player, InitSounds.TIME_ERASE_START.get());
 
                     removeAfterimages((ServerPlayerEntity) player);
+                    
+                    /*
+                     * FIXME 
+                     * [Render thread/ERROR] [net.minecraftforge.eventbus.EventBus/EVENTBUS]: Exception caught during firing event: null
+                     * 
+                     *  ...
+                     *  at com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase$TimeEraseHandler.stopTimeErase(KingCrimsonTimeErase.java:427)
+                     *  at com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase$TimeEraseHandler.onRightClickBlock(KingCrimsonTimeErase.java:387)
+                     *  ...
+                     */
                     stationaryAfterimages.forEach((entity, afterimage) -> {
                         if (entity.isAlive()) {
                             Vector3d finalPos = POSITIONS.get(entity).get(Math.max(0,POSITIONS.get( entity).size()-delay));
                             float rotY = YROT.get(entity).get(Math.max(0,YROT.get( entity).size()-delay));
                             float rotX = XROT.get(entity).get(Math.max(0,XROT.get( entity).size()-delay));
-                            MCUtil.runCommand((LivingEntity) entity,"tp @s "+finalPos.x+" "+finalPos.y+" "+finalPos.z+" "+rotY+" "+rotX);
+                            performTeleport(entity, serverWorld, finalPos, rotY, rotX);
                             POSITIONS.remove(entity);
                             XROT.remove(entity);
                             YROT.remove(entity);
@@ -176,6 +191,59 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     VFXServerHelper.startVFX(player, true);
                 }
             }
+        }
+    }
+    
+    private static void performTeleport(Entity entity, ServerWorld world, Vector3d pos, float yRot, float xRot) {
+        double x = pos.x;
+        double y = pos.y;
+        double z = pos.z;
+        
+        if (entity instanceof ServerPlayerEntity) {
+            ServerPlayerEntity player = (ServerPlayerEntity) entity;
+            ChunkPos chunkPos = new ChunkPos(new BlockPos(x, y, z));
+            world.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, entity.getId());
+            entity.stopRiding();
+            if (player.isSleeping()) {
+                player.stopSleepInBed(true, true);
+            }
+
+            if (world == entity.level) {
+                player.connection.teleport(x, y, z, yRot, xRot);
+            } else {
+                player.teleportTo(world, x, y, z, yRot, xRot);
+            }
+
+            entity.setYHeadRot(yRot);
+        } else {
+            yRot = MathHelper.wrapDegrees(yRot);
+            xRot = MathHelper.wrapDegrees(xRot);
+            xRot = MathHelper.clamp(xRot, -90, 90);
+            if (world == entity.level) {
+                entity.moveTo(x, y, z, yRot, xRot);
+                entity.setYHeadRot(yRot);
+            } else {
+                entity.unRide();
+                Entity oldEntity = entity;
+                entity = entity.getType().create(world);
+                if (entity == null) {
+                    return;
+                }
+
+                entity.restoreFrom(oldEntity);
+                entity.moveTo(x, y, z, yRot, xRot);
+                entity.setYHeadRot(yRot);
+                world.addFromAnotherDimension(entity);
+            }
+        }
+        
+        if (!(entity instanceof LivingEntity && ((LivingEntity) entity).isFallFlying())) {
+            entity.setDeltaMovement(entity.getDeltaMovement().multiply(1, 0, 1));
+            entity.setOnGround(true);
+        }
+
+        if (entity instanceof CreatureEntity) {
+            ((CreatureEntity) entity).getNavigation().stop();
         }
     }
 
