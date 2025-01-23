@@ -10,7 +10,8 @@
     "ClientWorldMixin",
     "TexturedParticleMixin",
     "TileEntityRendererDispatcherMixin",
-    "WorldRendererMixin"
+    "WorldRendererMixin",
+    "ModelPartMixin"
   ],
   "injectors": {
     "defaultRequire": 1

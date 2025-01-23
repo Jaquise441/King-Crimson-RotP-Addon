@@ -1,12 +1,9 @@
 package com.ht_dq.rotp_kingcrimson.entity;
 
-import com.github.standobyte.jojo.init.ModEntityTypes;
-import com.github.standobyte.jojo.util.mc.MCUtil;
+import com.ht_dq.rotp_kingcrimson.init.InitEntities;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -21,8 +18,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.UUID;
 
-public class AfterimageEntity extends Entity implements IEntityAdditionalSpawnData {
-    private LivingEntity originEntity;
+public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawnData {
+    private Entity originEntity;
     private UUID originUuid;
     private int ticksDelayed;
     private int delay;
@@ -30,26 +27,26 @@ public class AfterimageEntity extends Entity implements IEntityAdditionalSpawnDa
     private double speedLowerLimit;
     private Queue<PosData> originPosQueue = new LinkedList<PosData>();
     
-    public AfterimageEntity(World world, LivingEntity originEntity, int delay) {
-        this(ModEntityTypes.AFTERIMAGE.get(), world);
+    public KCAfterimageEntity(World world, Entity originEntity, int delay) {
+        this(InitEntities.KC_AFTERIMAGE.get(), world);
         setOriginEntity(originEntity);
         this.delay = delay;
         this.lifeSpan = 1200;
     }
 
-    public AfterimageEntity(EntityType<?> type, World world) {
+    public KCAfterimageEntity(EntityType<?> type, World world) {
         super(type, world);
         noPhysics = true;
     }
     
-    private void setOriginEntity(LivingEntity entity) {
+    private void setOriginEntity(Entity entity) {
         this.originEntity = entity;
         if (entity != null) {
             copyPosition(entity);
         }
     }
     
-    public LivingEntity getOriginEntity() {
+    public Entity getOriginEntity() {
         return originEntity;
     }
     
@@ -62,7 +59,12 @@ public class AfterimageEntity extends Entity implements IEntityAdditionalSpawnDa
     }
     
     public boolean shouldRender() {
-        return originEntity != null && originEntity.getAttributeValue(Attributes.MOVEMENT_SPEED) >= speedLowerLimit;
+        return originEntity != null;
+    }
+    
+    /** just in case you'd want only some of them to be red */
+    public boolean isRedOnly() {
+        return true;
     }
     
     @Override
@@ -77,15 +79,6 @@ public class AfterimageEntity extends Entity implements IEntityAdditionalSpawnDa
         if (ticksDelayed > delay) {
             PosData posData = originPosQueue.remove();
             moveTo(posData.pos.x, posData.pos.y, posData.pos.z, posData.yRot, posData.xRot);
-        }
-        
-        if (!level.isClientSide() && originEntity.isSprinting() && shouldRender()) {
-            level.getEntitiesOfClass(MobEntity.class, this.getBoundingBox().inflate(8), mob -> 
-            mob.getTarget() == originEntity && mob.canSee(this)).forEach(mob -> {
-                if (mob.getRandom().nextDouble() < 0.01) {
-                    MCUtil.loseTarget(mob, originEntity);
-                }
-            });
         }
     }
 
@@ -138,8 +131,8 @@ public class AfterimageEntity extends Entity implements IEntityAdditionalSpawnDa
     public void writeSpawnData(PacketBuffer buffer) {
         if (originUuid != null) {
             Entity entity = ((ServerWorld) level).getEntity(originUuid);
-            if (entity instanceof LivingEntity) {
-                setOriginEntity((LivingEntity) entity);
+            if (entity != null) {
+                setOriginEntity(entity);
             }
         }
         buffer.writeInt(originEntity == null ? -1 : originEntity.getId());
@@ -151,8 +144,8 @@ public class AfterimageEntity extends Entity implements IEntityAdditionalSpawnDa
     @Override
     public void readSpawnData(PacketBuffer additionalData) {
         Entity entity = level.getEntity(additionalData.readInt());
-        if (entity instanceof LivingEntity) {
-            setOriginEntity((LivingEntity) entity);
+        if (entity != null) {
+            setOriginEntity(entity);
         }
         delay = additionalData.readVarInt();
         lifeSpan = additionalData.readInt();
