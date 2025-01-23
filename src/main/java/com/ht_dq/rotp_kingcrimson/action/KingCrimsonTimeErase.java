@@ -15,6 +15,7 @@ import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.entity.stand.StandEntityTask;
 import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
+import com.github.standobyte.jojo.power.impl.stand.StandUtil;
 import com.ht_dq.rotp_kingcrimson.entity.KCAfterimageEntity;
 import com.ht_dq.rotp_kingcrimson.entity.TimeEraseDecoyEntity;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
@@ -160,15 +161,6 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
                     removeAfterimages((ServerPlayerEntity) player);
                     
-                    /*
-                     * FIXME 
-                     * [Render thread/ERROR] [net.minecraftforge.eventbus.EventBus/EVENTBUS]: Exception caught during firing event: null
-                     * 
-                     *  ...
-                     *  at com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase$TimeEraseHandler.stopTimeErase(KingCrimsonTimeErase.java:427)
-                     *  at com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase$TimeEraseHandler.onRightClickBlock(KingCrimsonTimeErase.java:387)
-                     *  ...
-                     */
                     stationaryAfterimages.forEach((entity, afterimage) -> {
                         if (entity.isAlive()) {
                             Vector3d finalPos = POSITIONS.get(entity).get(Math.max(0,POSITIONS.get( entity).size()-delay));
@@ -269,14 +261,21 @@ public class KingCrimsonTimeErase extends StandEntityAction {
 
         final ScorePlayerTeam finalRedTeam = redTeam;
 
-        world.getEntities(player, player.getBoundingBox().inflate(RADIUS), entity -> entity instanceof LivingEntity && entity != player)
+        world.getEntities(player, player.getBoundingBox().inflate(RADIUS), entity -> {
+            if (entity instanceof LivingEntity) {
+                LivingEntity living = (LivingEntity) entity;
+                living = StandUtil.getStandUser(living);
+                return living != player && !(living instanceof TimeEraseDecoyEntity);
+            }
+            return false;
+        })
                 .forEach(entity -> {
-                    KCAfterimageEntity movingAfterimage = new KCAfterimageEntity(world, (LivingEntity) entity, 10);
+                    KCAfterimageEntity movingAfterimage = new KCAfterimageEntity(world, entity, 10);
                     movingAfterimage.setLifeSpan(MAX_DURATION);
                     afterimages.put(entity, movingAfterimage);
                     sendAfterimageToPlayer(player, movingAfterimage);
 
-                    KCAfterimageEntity stationaryAfterimage = new KCAfterimageEntity(world, (LivingEntity) entity, delay);
+                    KCAfterimageEntity stationaryAfterimage = new KCAfterimageEntity(world, entity, delay);
                     stationaryAfterimage.setLifeSpan(MAX_DURATION);
                     stationaryAfterimage.setGlowing(true);
                     scoreboard.addPlayerToTeam(stationaryAfterimage.getStringUUID(), finalRedTeam);
@@ -487,12 +486,14 @@ public class KingCrimsonTimeErase extends StandEntityAction {
         }
 
         private void stopTimeErase(PlayerEntity player) {
-            MinecraftForge.EVENT_BUS.unregister(this);
-            DelayedTaskScheduler.stopRepeating();
-            if (player instanceof ServerPlayerEntity) {
-                ((ServerPlayerEntity) player).closeContainer();
+            if (!player.level.isClientSide()) {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                DelayedTaskScheduler.stopRepeating();
+                if (player instanceof ServerPlayerEntity) {
+                    ((ServerPlayerEntity) player).closeContainer();
+                }
+                userPower.stopHeldAction(false);
             }
-            userPower.stopHeldAction(false);
         }
     }
 

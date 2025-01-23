@@ -35,7 +35,7 @@ public class AfterimageRenderer<T extends KCAfterimageEntity> extends EntityRend
     @Override
     public void render(T afterimageEntity, float yRotation, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
         if (!afterimageEntity.isInvisibleTo(Minecraft.getInstance().player)) {
-            LivingEntity originEntity = afterimageEntity.getOriginEntity();
+            Entity originEntity = afterimageEntity.getOriginEntity();
             if (originEntity != null) {
                 if (afterimageEntity.isRedOnly()) {
                     isRenderingKCAfterimage = true;
@@ -48,9 +48,10 @@ public class AfterimageRenderer<T extends KCAfterimageEntity> extends EntityRend
         }
     }
 
-    private <E extends LivingEntity, M extends EntityModel<E>> void renderAfterimage(E entity, KCAfterimageEntity afterimageEntity,
+    private <E extends Entity, M extends EntityModel<E>> void renderAfterimage(E entity, KCAfterimageEntity afterimageEntity,
                                                                                float yRotation, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
-        LivingRenderer<E, M> renderer = (LivingRenderer<E, M>) entityRenderDispatcher.getRenderer(entity);
+//        LivingRenderer<E, M> renderer = (LivingRenderer<E, M>) entityRenderDispatcher.getRenderer(entity);
+        EntityRenderer<E> renderer = (EntityRenderer<E>) entityRenderDispatcher.getRenderer(entity);
         renderer.render(entity, yRotation, partialTick, matrixStack, buffer, packedLight);
         /*if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<E, M>(entity, renderer, partialTick, matrixStack, buffer, packedLight))) return;
 

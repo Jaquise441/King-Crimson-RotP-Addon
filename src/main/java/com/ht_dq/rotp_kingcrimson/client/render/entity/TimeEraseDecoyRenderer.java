@@ -6,8 +6,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -27,9 +25,9 @@ public class TimeEraseDecoyRenderer extends EntityRenderer<TimeEraseDecoyEntity>
         renderDecoy(decoyEntity.getKCUserToRender(), decoyEntity, yRotation, partialTick, matrixStack, buffer, packedLight);
     }
     
-    private <E extends LivingEntity, M extends EntityModel<E>> void renderDecoy(E realEntity, TimeEraseDecoyEntity decoyEntity, float yRotation, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
+    private <E extends LivingEntity> void renderDecoy(E realEntity, TimeEraseDecoyEntity decoyEntity, float yRotation, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight) {
         if (realEntity == null) return;
-        LivingRenderer<E, M> renderer = (LivingRenderer<E, M>) entityRenderDispatcher.getRenderer(realEntity);
+        EntityRenderer<E> renderer = (EntityRenderer<E>) entityRenderDispatcher.getRenderer(realEntity);
         renderer.render(realEntity, yRotation, partialTick, matrixStack, buffer, packedLight);
     }
 
