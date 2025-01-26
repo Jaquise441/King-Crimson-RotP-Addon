@@ -10,8 +10,10 @@ import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.github.standobyte.jojo.power.impl.stand.StandPower;
 import com.github.standobyte.jojo.power.impl.stand.type.EntityStandType;
 import com.github.standobyte.jojo.power.impl.stand.type.StandType;
+import com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase;
 import com.ht_dq.rotp_kingcrimson.init.InitEntities;
 import com.ht_dq.rotp_kingcrimson.init.InitStands;
+import com.ht_dq.rotp_kingcrimson.util.AddonReflection;
 
 import net.minecraft.client.entity.player.RemoteClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -25,6 +27,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -77,7 +81,7 @@ public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IE
     public void tick() {
         super.tick();
         if (!level.isClientSide()) {
-            if (!isValid()) {
+            if (!isValid() || tickCount > KingCrimsonTimeErase.MAX_DURATION) {
                 remove();
                 return;
             }
@@ -157,6 +161,14 @@ public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IE
             kcUserProjection.removeEffect(Effects.INVISIBILITY);
             kcUserProjection.removeEffect(ModStatusEffects.FULL_INVISIBILITY.get());
             kcUserProjection.setInvisible(false);
+            if (kcUser instanceof PlayerEntity && kcUserProjection instanceof PlayerEntity) {
+                PlayerEntity originalPlayer = (PlayerEntity) kcUser;
+                PlayerEntity projectionPlayer = (PlayerEntity) kcUserProjection;
+                EntityDataManager originalData = originalPlayer.getEntityData();
+                EntityDataManager projectionData = projectionPlayer.getEntityData();
+                DataParameter<Byte> model2ndLayer = AddonReflection.getPlayerSkinLayerDataParameter();
+                projectionData.set(model2ndLayer, originalData.get(model2ndLayer));
+            }
         }
     }
     
