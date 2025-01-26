@@ -162,8 +162,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     removeAfterimages((ServerPlayerEntity) player);
                     
                     stationaryAfterimages.forEach((entity, afterimage) -> {
-                        if (entity.isAlive()) {
-                            // FIXME NullPointerException when spamming the ability in Resolve
+                        if (entity.isAlive() && POSITIONS.containsKey(entity)) {
                             Vector3d finalPos = POSITIONS.get(entity).get(Math.max(0,POSITIONS.get( entity).size()-delay));
                             float rotY = YROT.get(entity).get(Math.max(0,YROT.get( entity).size()-delay));
                             float rotX = XROT.get(entity).get(Math.max(0,XROT.get( entity).size()-delay));
