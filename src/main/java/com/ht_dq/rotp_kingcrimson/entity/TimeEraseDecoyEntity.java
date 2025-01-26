@@ -161,15 +161,21 @@ public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IE
             kcUserProjection.removeEffect(Effects.INVISIBILITY);
             kcUserProjection.removeEffect(ModStatusEffects.FULL_INVISIBILITY.get());
             kcUserProjection.setInvisible(false);
+
+            if (kcUser.isShiftKeyDown()) {
+                kcUserProjection.setShiftKeyDown(true);
+            }
+            kcUserProjection.setPose(kcUser.getPose());
+            EntityDataManager originalData = kcUser.getEntityData();
+            EntityDataManager projectionData = kcUserProjection.getEntityData();
             if (kcUser instanceof PlayerEntity && kcUserProjection instanceof PlayerEntity) {
-                PlayerEntity originalPlayer = (PlayerEntity) kcUser;
-                PlayerEntity projectionPlayer = (PlayerEntity) kcUserProjection;
-                EntityDataManager originalData = originalPlayer.getEntityData();
-                EntityDataManager projectionData = projectionPlayer.getEntityData();
-                DataParameter<Byte> model2ndLayer = AddonReflection.getPlayerSkinLayerDataParameter();
-                projectionData.set(model2ndLayer, originalData.get(model2ndLayer));
+                copyDataValue(originalData, projectionData, AddonReflection.getPlayerSkinLayerDataParameter());
             }
         }
+    }
+    
+    private static <T> void copyDataValue(EntityDataManager src, EntityDataManager dest, DataParameter<T> param) {
+        src.set(param, dest.get(param));
     }
     
     private void clTickUserProjection() {
