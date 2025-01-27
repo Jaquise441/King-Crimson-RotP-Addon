@@ -68,7 +68,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class KingCrimsonTimeErase extends StandEntityAction {
 
-    private static final int MAX_DURATION = 200;
+    public static final int MAX_DURATION = 200;
     private static final double RADIUS = 192.0;
     public static final Map<UUID, Boolean> playerTimeEraseActive = new HashMap<>();
     private final Map<UUID, KingCrimsonDimensionChangeHandler> dimensionChangeHandlers = new HashMap<>();
@@ -162,7 +162,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     removeAfterimages((ServerPlayerEntity) player);
                     
                     stationaryAfterimages.forEach((entity, afterimage) -> {
-                        if (entity.isAlive()) {
+                        if (entity.isAlive() && POSITIONS.containsKey(entity)) {
                             Vector3d finalPos = POSITIONS.get(entity).get(Math.max(0,POSITIONS.get( entity).size()-delay));
                             float rotY = YROT.get(entity).get(Math.max(0,YROT.get( entity).size()-delay));
                             float rotX = XROT.get(entity).get(Math.max(0,XROT.get( entity).size()-delay));
