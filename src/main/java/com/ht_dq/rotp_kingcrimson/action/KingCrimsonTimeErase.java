@@ -30,6 +30,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.brain.memory.MemoryModuleType;
 import net.minecraft.entity.monster.piglin.PiglinBruteEntity;
 import net.minecraft.entity.monster.piglin.PiglinEntity;
@@ -141,6 +142,8 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             TimeEraseDecoyEntity userDecoy = new TimeEraseDecoyEntity(world);
             userDecoy.setKCUser(user);
             world.addFreshEntity(userDecoy);
+            world.getEntitiesOfClass(MobEntity.class, user.getBoundingBox().inflate(16), mob -> mob.getTarget() == user)
+            .forEach(mob -> mob.setTarget(userDecoy));
         }
     }
 
