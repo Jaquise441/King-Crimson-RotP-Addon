@@ -175,7 +175,7 @@ public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IE
     }
     
     private static <T> void copyDataValue(EntityDataManager src, EntityDataManager dest, DataParameter<T> param) {
-        src.set(param, dest.get(param));
+        dest.set(param, src.get(param));
     }
     
     private void clTickUserProjection() {
