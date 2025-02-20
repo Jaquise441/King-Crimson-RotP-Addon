@@ -11,7 +11,8 @@
     "TexturedParticleMixin",
     "TileEntityRendererDispatcherMixin",
     "WorldRendererMixin",
-    "ModelPartMixin"
+    "ModelPartMixin",
+    "EntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

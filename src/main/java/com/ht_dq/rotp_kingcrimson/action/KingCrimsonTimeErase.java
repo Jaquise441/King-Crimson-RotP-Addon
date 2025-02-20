@@ -70,7 +70,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class KingCrimsonTimeErase extends StandEntityAction {
 
     public static final int MAX_DURATION = 200;
-    private static final double RADIUS = 192.0;
+    public static final double RADIUS = 192.0;
     public static final Map<UUID, Boolean> playerTimeEraseActive = new HashMap<>();
     private final Map<UUID, KingCrimsonDimensionChangeHandler> dimensionChangeHandlers = new HashMap<>();
     private static boolean isTimeEraseActive = false;
@@ -275,12 +275,14 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                 .forEach(entity -> {
                     KCAfterimageEntity movingAfterimage = new KCAfterimageEntity(world, entity, 10);
                     movingAfterimage.setLifeSpan(MAX_DURATION);
+                    movingAfterimage.setStationary(false);
                     afterimages.put(entity, movingAfterimage);
                     sendAfterimageToPlayer(player, movingAfterimage);
 
                     KCAfterimageEntity stationaryAfterimage = new KCAfterimageEntity(world, entity, delay);
                     stationaryAfterimage.setLifeSpan(MAX_DURATION);
                     stationaryAfterimage.setGlowing(true);
+                    stationaryAfterimage.setStationary(true);
                     scoreboard.addPlayerToTeam(stationaryAfterimage.getStringUUID(), finalRedTeam);
                     stationaryAfterimages.put(entity, stationaryAfterimage);
                     sendAfterimageWithGlowToPlayer(player, stationaryAfterimage);

@@ -37,7 +37,7 @@ public class AfterimageRenderer<T extends KCAfterimageEntity> extends EntityRend
         if (!afterimageEntity.isInvisibleTo(Minecraft.getInstance().player)) {
             Entity originEntity = afterimageEntity.getOriginEntity();
             if (originEntity != null) {
-                if (afterimageEntity.isRedOnly()) {
+                if (!afterimageEntity.isStationary()) {
                     isRenderingKCAfterimage = true;
                 }
                 renderAfterimage(originEntity, afterimageEntity,

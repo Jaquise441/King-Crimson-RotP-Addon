@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -27,6 +28,9 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import static com.ht_dq.rotp_kingcrimson.util.AddonReflection.ENTITY_RENDERER_ISRED;
+import static com.ht_dq.rotp_kingcrimson.util.AddonReflection.ENTITY_RENDERER_MIXIN_ISRED_FIELD;
 
 public class ClientEventHandler {
     private static ClientEventHandler instance = null;
@@ -69,6 +73,13 @@ public class ClientEventHandler {
                     }
                     prevTickErasingTime = erasingTime;
                     break;
+            }
+            RotpKingCrimsonAddon.getLogger().info(ENTITY_RENDERER_ISRED);
+            try {
+                ENTITY_RENDERER_ISRED = ENTITY_RENDERER_MIXIN_ISRED_FIELD.getBoolean(null);
+            } catch (IllegalAccessException e) {
+                RotpKingCrimsonAddon.getLogger().error(e);
+                throw new RuntimeException(e);
             }
         } else {
             prevTickErasingTime = false;

@@ -25,6 +25,7 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
     private int delay;
     private int lifeSpan;
     private double speedLowerLimit;
+    private boolean isStationary;
     private Queue<PosData> originPosQueue = new LinkedList<PosData>();
     
     public KCAfterimageEntity(World world, Entity originEntity, int delay) {
@@ -63,9 +64,9 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
     }
     
     /** just in case you'd want only some of them to be red */
-    public boolean isRedOnly() {
-        return true;
-    }
+//    public boolean isRedOnly() {
+//        return true;
+//    }
     
     @Override
     public void tick() {
@@ -106,6 +107,7 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
         this.tickCount = nbt.getInt("Age");
         this.lifeSpan = nbt.getInt("LifeSpan");
         this.speedLowerLimit = nbt.getDouble("Speed");
+        this.isStationary = nbt.getBoolean("IsStationary");
         if (nbt.hasUUID("Origin")) {
             this.originUuid = nbt.getUUID("Origin");
         }
@@ -117,6 +119,7 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
         nbt.putInt("Age", tickCount);
         nbt.putInt("LifeSpan", lifeSpan);
         nbt.putDouble("Speed", speedLowerLimit);
+        nbt.putBoolean("IsStationary", isStationary);
         if (originUuid != null) {
             nbt.putUUID("Origin", originEntity.getUUID());
         }
@@ -139,6 +142,7 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
         buffer.writeVarInt(delay);
         buffer.writeInt(lifeSpan);
         buffer.writeDouble(speedLowerLimit);
+        buffer.writeBoolean(isStationary);
     }
 
     @Override
@@ -150,6 +154,13 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
         delay = additionalData.readVarInt();
         lifeSpan = additionalData.readInt();
         speedLowerLimit = additionalData.readDouble();
+        isStationary = additionalData.readBoolean();
+    }
+    public boolean isStationary() {
+        return isStationary;
+    }
+    public void setStationary(boolean stationary) {
+        isStationary = stationary;
     }
 
     private static class PosData {

@@ -6,6 +6,7 @@ import com.ht_dq.rotp_kingcrimson.init.InitStands;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import com.ht_dq.rotp_kingcrimson.network.server.TimerPutPacket;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -34,5 +35,9 @@ public class VFXServerHelper {
         else if (player instanceof ServerPlayerEntity) {
             AddonPackets.sendToClient(new TimerPutPacket(player.getId()), (ServerPlayerEntity) player);
         }
+    }
+    public static boolean shouldBeRed(){
+//        Minecraft mc = Minecraft.getInstance();
+        return true;
     }
 }
