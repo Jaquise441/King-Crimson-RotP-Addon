@@ -1,0 +1,21 @@
+{
+  "entity.rotp_kingcrimson.kingcrimson": "King Crimson",
+  "stand.rotp_kingcrimson.kingcrimson": "King Crimson",
+
+  "action.rotp_kingcrimson.kingcrimson_punch": "Удар",
+  "action.rotp_kingcrimson.kingcrimson_heavy_punch": "Важкий удар",
+  "action.rotp_kingcrimson.kingcrimson_groundpunch": "Удар по землі",
+  "action.rotp_kingcrimson.kingcrimson_barrage": "Шквал ударів",
+  "action.rotp_kingcrimson.kingcrimson_chop": "Рубяча атака",
+  "action.rotp_kingcrimson.kingcrimson_impale": "Пронзаючий удар",
+
+  "action.rotp_kingcrimson.kingcrimson_block": "Блокування",
+  "action.rotp_kingcrimson.kingcrimson_timeskip": "Вирізання Часу",
+  "action.rotp_kingcrimson.kingcrimson_epitaph": "Епітафія",
+  "action.rotp_kingcrimson.kingcrimson_timeerase": "Стирання Часу",
+
+  "effect.rotp_kingcrimson.bleeding": "Кровотеча",
+  "effect.rotp_kingcrimson.mangled_body": "Понівечене тіло",
+  "effect.rotp_kingcrimson.gaping_wound": "Зяюча рана",
+  "rotp_kingcrimson.subtitle.kingcrimson_name": "\"King Crimson\""
+}

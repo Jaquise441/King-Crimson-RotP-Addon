@@ -1,0 +1,52 @@
+{
+  "skins": {
+    "rotp_kingcrimson": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xD90F13"
+    },
+    "rotp_kingcrimson:skina": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xCF2F50"
+    },
+    "rotp_kingcrimson:skinb": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xFDFD5E"
+    },
+    "rotp_kingcrimson:skinc": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xE079FA"
+    },
+    "rotp_kingcrimson:skind": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0x82BA74"
+    },
+    "rotp_kingcrimson:skine": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0x81FBFC"
+    },
+    "rotp_kingcrimson:skinf": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xE9DA41"
+    },
+    "rotp_kingcrimson:sking": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xBCF283"
+    },
+    "rotp_kingcrimson:skinh": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xBCF283"
+    },
+    "rotp_kingcrimson:skini": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xF2F2F2"
+    },
+    "rotp_kingcrimson:skinj": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xF2F2F2"
+    },
+    "rotp_kingcrimson:skink": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0x0F75D9"
+    }
+  }
+}

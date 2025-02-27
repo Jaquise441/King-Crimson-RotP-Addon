@@ -1,0 +1,38 @@
+{
+  "entity.rotp_kingcrimson.kingcrimson": "King Crimson",
+  "stand.rotp_kingcrimson.kingcrimson": "King Crimson",
+
+  "action.rotp_kingcrimson.kingcrimson_punch": "Punch",
+  "action.rotp_kingcrimson.kingcrimson_heavy_punch": "Heavy Punch",
+  "action.rotp_kingcrimson.kingcrimson_groundpunch": "Ground Punch",
+  "action.rotp_kingcrimson.kingcrimson_barrage": "Barrage",
+  "action.rotp_kingcrimson.kingcrimson_doppio_barrage": "Barrage",
+  "action.rotp_kingcrimson.kingcrimson_chop": "Chop",
+  "action.rotp_kingcrimson.kingcrimson_impale": "Impale",
+  "action.rotp_kingcrimson.kingcrimson_groundslam": "Ground Slam",
+  "action.rotp_kingcrimson.kingcrimson_desperate_eyejab": "Desperate Eyejab",
+  "action.rotp_kingcrimson.kingcrimson_projectile_throw": "Throw Projectile",
+
+  "action.rotp_kingcrimson.kingcrimson_block": "Block",
+  "action.rotp_kingcrimson.kingcrimson_timeskip": "Time Skip",
+  "action.rotp_kingcrimson.kingcrimson_epitaph": "Epitaph",
+  "action.rotp_kingcrimson.kingcrimson_timeerase": "Time Erase",
+
+  "effect.rotp_kingcrimson.bleeding": "Bleeding",
+  "effect.rotp_kingcrimson.mangled_body": "Mangled Body",
+  "effect.rotp_kingcrimson.gaping_wound": "Gaping Wound",
+  "effect.rotp_kingcrimson.half_blindness_left": "Half Blindness",
+  "effect.rotp_kingcrimson.half_blindness_right": "Half Blindness",
+
+
+
+  "jojo.message.action_condition.no_throwable_item_in_mainhand": "You don't have any items to throw",
+  "jojo.message.action_condition.not_throwable": "You can't throw that item",
+  "jojo.message.action_condition.barrage_health": "You are not desperate enough to resort to Barrage",
+  "jojo.message.action_condition.barrage_health_doppio": "You are not panicked enough to use Barrage",
+  "jojo.message.action_condition.molotov_flint_and_steel": "You must hold Flint and Steel in your offhand",
+  "jojo.message.action_condition.nope": " ",
+
+
+  "rotp_kingcrimson.subtitle.kingcrimson_name": "\"King Crimson\""
+}
