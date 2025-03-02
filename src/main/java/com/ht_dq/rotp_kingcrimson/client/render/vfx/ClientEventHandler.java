@@ -5,12 +5,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.github.standobyte.jojo.init.ModStatusEffects;
+import com.github.standobyte.jojo.power.impl.stand.StandUtil;
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
+import com.ht_dq.rotp_kingcrimson.client.render.entity.AfterimageRenderer;
 import com.ht_dq.rotp_kingcrimson.client.render.vfx.TemporaryDimensionEffects.DimensionEffect;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
@@ -19,13 +20,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ClientEventHandler {
@@ -110,6 +114,24 @@ public class ClientEventHandler {
     }
 
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void setRenderEntityRed(RenderLivingEvent.Pre<?, ?> event) {
+        if (isErasingTime()) {
+            LivingEntity entity = event.getEntity();
+            // technically that's true, right?
+            boolean isUnderTimeErase = !isPlayerErasingTime(StandUtil.getStandUser(entity));
+            if (isUnderTimeErase) {
+                AfterimageRenderer.renderLivingEntityRed = true;
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
+    public void resetRedRender(RenderLivingEvent.Pre<?, ?> event) {
+        AfterimageRenderer.renderLivingEntityRed = false;
+    }
+
+
     public static boolean isErasingTime() {
         Minecraft mc = Minecraft.getInstance();
 
@@ -119,7 +141,7 @@ public class ClientEventHandler {
                 mc.player.hasEffect(Effects.DIG_SLOWDOWN);
     }
     
-    public static boolean isPlayerErasingTime(PlayerEntity player) {
+    public static boolean isPlayerErasingTime(LivingEntity player) {
         return player.hasEffect(Effects.LUCK) &&
                 player.hasEffect(ModStatusEffects.FULL_INVISIBILITY.get()) &&
                 player.hasEffect(Effects.DIG_SLOWDOWN);

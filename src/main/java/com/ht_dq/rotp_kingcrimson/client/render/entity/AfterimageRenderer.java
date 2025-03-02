@@ -3,25 +3,19 @@ package com.ht_dq.rotp_kingcrimson.client.render.entity;
 import com.ht_dq.rotp_kingcrimson.entity.KCAfterimageEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 public class AfterimageRenderer<T extends KCAfterimageEntity> extends EntityRenderer<T> {
+    // it just works
     public static boolean isRenderingKCAfterimage = false;
+    public static boolean renderKCAfterimageRed = false;
+    public static boolean renderLivingEntityRed = false;
 
     public AfterimageRenderer(EntityRendererManager renderManager) {
         super(renderManager);
@@ -37,11 +31,11 @@ public class AfterimageRenderer<T extends KCAfterimageEntity> extends EntityRend
         if (!afterimageEntity.isInvisibleTo(Minecraft.getInstance().player)) {
             Entity originEntity = afterimageEntity.getOriginEntity();
             if (originEntity != null) {
-                if (afterimageEntity.isRedOnly()) {
-                    isRenderingKCAfterimage = true;
-                }
+                isRenderingKCAfterimage = true;
+                renderKCAfterimageRed = afterimageEntity.isRedOnly();
                 renderAfterimage(originEntity, afterimageEntity,
                         yRotation, partialTick, matrixStack, buffer, packedLight);
+                renderKCAfterimageRed = false;
                 isRenderingKCAfterimage = false;
             }
             super.render(afterimageEntity, yRotation, partialTick, matrixStack, buffer, packedLight);

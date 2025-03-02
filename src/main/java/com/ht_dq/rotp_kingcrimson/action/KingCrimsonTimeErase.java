@@ -307,6 +307,7 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     KCAfterimageEntity stationaryAfterimage = new KCAfterimageEntity(world, entity, delay);
                     stationaryAfterimage.setLifeSpan(MAX_DURATION);
                     stationaryAfterimage.setGlowing(true);
+                    stationaryAfterimage.setStationary(true);
                     scoreboard.addPlayerToTeam(stationaryAfterimage.getStringUUID(), finalRedTeam);
                     stationaryAfterimages.put(entity, stationaryAfterimage);
                     sendAfterimageWithGlowToPlayer(player, stationaryAfterimage);

@@ -25,6 +25,7 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
     private int delay;
     private int lifeSpan;
     private double speedLowerLimit;
+    private boolean isStationary = false;
     private Queue<PosData> originPosQueue = new LinkedList<PosData>();
     
     public KCAfterimageEntity(World world, Entity originEntity, int delay) {
@@ -62,9 +63,13 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
         return originEntity != null;
     }
     
+    public void setStationary(boolean isStationary) {
+        this.isStationary = isStationary;
+    }
+    
     /** just in case you'd want only some of them to be red */
     public boolean isRedOnly() {
-        return true;
+        return !isStationary;
     }
     
     @Override
@@ -109,6 +114,7 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
         if (nbt.hasUUID("Origin")) {
             this.originUuid = nbt.getUUID("Origin");
         }
+        this.isStationary = nbt.getBoolean("Stationary");
     }
 
     @Override
@@ -120,6 +126,7 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
         if (originUuid != null) {
             nbt.putUUID("Origin", originEntity.getUUID());
         }
+        nbt.putBoolean("Stationary", isStationary);
     }
 
     @Override
@@ -139,6 +146,7 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
         buffer.writeVarInt(delay);
         buffer.writeInt(lifeSpan);
         buffer.writeDouble(speedLowerLimit);
+        buffer.writeBoolean(isStationary);
     }
 
     @Override
@@ -150,6 +158,7 @@ public class KCAfterimageEntity extends Entity implements IEntityAdditionalSpawn
         delay = additionalData.readVarInt();
         lifeSpan = additionalData.readInt();
         speedLowerLimit = additionalData.readDouble();
+        isStationary = additionalData.readBoolean();
     }
 
     private static class PosData {
