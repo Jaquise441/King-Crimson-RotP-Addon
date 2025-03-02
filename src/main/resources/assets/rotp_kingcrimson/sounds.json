@@ -180,7 +180,7 @@
   },
   "diavolo_punch": {
     "subtitle": "Hmph!",
-    "sounds": [ "rotp_kingcrimson:stand_user/diavolo_punch", "roptp_kingcrimson:stand_user/diavolo_punch2", "rotp_kingcrimson:stand_user/diavolo_punch3" ]
+    "sounds": [ "rotp_kingcrimson:stand_user/diavolo_punch", "rotp_kingcrimson:stand_user/diavolo_punch2", "rotp_kingcrimson:stand_user/diavolo_punch3" ]
   },
   "diavolo_chop": {
     "subtitle": "No witnesses.",
