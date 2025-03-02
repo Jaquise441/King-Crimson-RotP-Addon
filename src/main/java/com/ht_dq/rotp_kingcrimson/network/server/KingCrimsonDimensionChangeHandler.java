@@ -1,6 +1,7 @@
 package com.ht_dq.rotp_kingcrimson.network.server;
 
 import com.github.standobyte.jojo.init.ModStatusEffects;
+import com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 
@@ -28,7 +29,7 @@ public class KingCrimsonDimensionChangeHandler {
     @SubscribeEvent
     public void onPlayerChangedDimension(PlayerChangedDimensionEvent event) {
         PlayerEntity player = event.getPlayer();
-        if (player != null && isKingCrimsonUser(player)) {
+        if (player != null && KingCrimsonTimeErase.isErasingTime(player)) {
             postTimeEraseCleanup((ServerWorld) player.level, player);
             applyTimeEraseEffects(player);
         }
@@ -39,7 +40,7 @@ public class KingCrimsonDimensionChangeHandler {
         if (timeEraseActive && player != null) {
             int currentDimensionId = player.level.dimension().location().hashCode();
 
-            if (currentDimensionId != lastKnownDimensionId && isKingCrimsonUser(player)) {
+            if (currentDimensionId != lastKnownDimensionId && KingCrimsonTimeErase.isErasingTime(player)) {
                 postTimeEraseCleanup((ServerWorld) player.level, player);
                 applyTimeEraseEffects(player);
                 lastKnownDimensionId = currentDimensionId;
@@ -58,21 +59,13 @@ public class KingCrimsonDimensionChangeHandler {
         MinecraftForge.EVENT_BUS.unregister(this);
     }
 
-    private boolean isKingCrimsonUser(PlayerEntity player) {
-        return player != null &&
-                player.hasEffect(Effects.LUCK) &&
-                player.hasEffect(Effects.INVISIBILITY) &&
-                player.hasEffect(ModStatusEffects.FULL_INVISIBILITY.get()) &&
-                player.hasEffect(Effects.DIG_SLOWDOWN);
-    }
-
     private void postTimeEraseCleanup(ServerWorld world, PlayerEntity player) {
         if (player.abilities.invulnerable) {
             player.abilities.invulnerable = false;
         }
 
+        KingCrimsonTimeErase.setIsErasingTime(player, false);
         player.removeEffect(ModStatusEffects.FULL_INVISIBILITY.get());
-        player.removeEffect(Effects.LUCK);
         player.removeEffect(Effects.INVISIBILITY);
         player.removeEffect(Effects.DIG_SLOWDOWN);
         removeMarkers(world);

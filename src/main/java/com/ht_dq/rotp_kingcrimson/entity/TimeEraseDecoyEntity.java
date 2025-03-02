@@ -164,6 +164,7 @@ public class TimeEraseDecoyEntity extends MobEntity implements IMobStandUser, IE
             }
         }
         if (kcUserProjection != null) {
+            KingCrimsonTimeErase.setIsErasingTime(kcUserProjection, true);
             kcUserProjection.removeEffect(Effects.INVISIBILITY);
             kcUserProjection.removeEffect(ModStatusEffects.FULL_INVISIBILITY.get());
             kcUserProjection.setInvisible(false);

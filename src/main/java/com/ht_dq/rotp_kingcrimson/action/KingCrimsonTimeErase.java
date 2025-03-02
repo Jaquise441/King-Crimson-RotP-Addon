@@ -376,12 +376,12 @@ public class KingCrimsonTimeErase extends StandEntityAction {
     }
 
     private void applyEffects(LivingEntity player, StandEntity standEntity, boolean start) {
+        setIsErasingTime(player, start);
         if (start) {
 
             int MAX_DURATION = KCConfig.TIME_ERASE_DURATION.get();
 
             player.addEffect(new EffectInstance(Effects.INVISIBILITY, MAX_DURATION, 0, false, false));
-            player.addEffect(new EffectInstance(Effects.LUCK, MAX_DURATION, 0, false, false));
             player.addEffect(new EffectInstance(ModStatusEffects.FULL_INVISIBILITY.get(), MAX_DURATION, 999999, false, false));
             player.addEffect(new EffectInstance(Effects.WEAKNESS, MAX_DURATION, 999999, false, false));
             player.addEffect(new EffectInstance(Effects.DIG_SLOWDOWN, MAX_DURATION, 999999, false, false));
@@ -389,7 +389,6 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             standEntity.addEffect(new EffectInstance(Effects.INVISIBILITY, MAX_DURATION, 0, false, false));
             applyInvulnerability(player);
         } else {
-            player.removeEffect(Effects.LUCK);
             player.removeEffect(Effects.INVISIBILITY);
             player.removeEffect(ModStatusEffects.FULL_INVISIBILITY.get());
             player.removeEffect(Effects.WEAKNESS);
@@ -399,6 +398,20 @@ public class KingCrimsonTimeErase extends StandEntityAction {
             standEntity.removeEffect(Effects.INVISIBILITY);
             removeInvulnerability(player);
         }
+    }
+    
+    // TODO use a capability instead of the luck effect
+    public static void setIsErasingTime(LivingEntity entity, boolean isErasingTime) {
+        if (isErasingTime) {
+            entity.addEffect(new EffectInstance(Effects.LUCK, Integer.MAX_VALUE, 0, false, false));
+        }
+        else {
+            entity.removeEffect(Effects.LUCK);
+        }
+    }
+    
+    public static boolean isErasingTime(LivingEntity entity) {
+        return entity.hasEffect(Effects.LUCK);
     }
 
     private static void playSound(LivingEntity player, SoundEvent sound, boolean forKingCrimsonUserOnly) {

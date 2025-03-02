@@ -8,11 +8,12 @@ import java.util.Random;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.github.standobyte.jojo.init.ModStatusEffects;
 import com.github.standobyte.jojo.power.impl.stand.StandUtil;
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
+import com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.AfterimageRenderer;
 import com.ht_dq.rotp_kingcrimson.client.render.vfx.TemporaryDimensionEffects.DimensionEffect;
+import com.ht_dq.rotp_kingcrimson.init.InitEntities;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.block.Block;
@@ -21,7 +22,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -117,9 +117,14 @@ public class ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void setRenderEntityRed(RenderLivingEvent.Pre<?, ?> event) {
         if (isErasingTime()) {
-            LivingEntity entity = event.getEntity();
+            LivingEntity standUser = StandUtil.getStandUser(event.getEntity());
             // technically that's true, right?
-            boolean isUnderTimeErase = !isPlayerErasingTime(StandUtil.getStandUser(entity));
+            boolean isUnderTimeErase;
+            if (standUser.getType() == InitEntities.TIME_ERASE_DECOY.get()) {
+                isUnderTimeErase = false;
+            } else {
+                isUnderTimeErase = !KingCrimsonTimeErase.isErasingTime(StandUtil.getStandUser(standUser));
+            }
             if (isUnderTimeErase) {
                 AfterimageRenderer.renderLivingEntityRed = true;
             }
@@ -134,17 +139,7 @@ public class ClientEventHandler {
 
     public static boolean isErasingTime() {
         Minecraft mc = Minecraft.getInstance();
-
-        return mc.player != null &&
-                mc.player.hasEffect(Effects.LUCK) &&
-                mc.player.hasEffect(ModStatusEffects.FULL_INVISIBILITY.get()) &&
-                mc.player.hasEffect(Effects.DIG_SLOWDOWN);
-    }
-    
-    public static boolean isPlayerErasingTime(LivingEntity player) {
-        return player.hasEffect(Effects.LUCK) &&
-                player.hasEffect(ModStatusEffects.FULL_INVISIBILITY.get()) &&
-                player.hasEffect(Effects.DIG_SLOWDOWN);
+        return mc.player != null && KingCrimsonTimeErase.isErasingTime(mc.player);
     }
     
     @SubscribeEvent
