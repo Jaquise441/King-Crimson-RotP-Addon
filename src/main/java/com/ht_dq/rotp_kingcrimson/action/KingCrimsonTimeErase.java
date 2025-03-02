@@ -196,15 +196,17 @@ public class KingCrimsonTimeErase extends StandEntityAction {
                     DelayedTaskScheduler.stopRepeating();
                     VFXServerHelper.startVFX(player, true);
 
-                    int cooldownTicks;
-                    if (KCConfig.TIME_ERASE_DYNAMIC_COOLDOWN.get()) {
-                        cooldownTicks = (int) (activeTicks * KCConfig.TIME_ERASE_DYNAMIC_COOLDOWN_MULTIPLIER.get());
-                        cooldownTicks = Math.max(cooldownTicks, KCConfig.TIME_ERASE_DYNAMIC_MINIMUM_COOLDOWN.get());
-                    } else {
-                        cooldownTicks = KCConfig.TIME_ERASE_COOLDOWN.get();
+                    if (!standPower.isUserCreative()) {
+                        int cooldownTicks;
+                        if (KCConfig.TIME_ERASE_DYNAMIC_COOLDOWN.get()) {
+                            cooldownTicks = (int) (activeTicks * KCConfig.TIME_ERASE_DYNAMIC_COOLDOWN_MULTIPLIER.get());
+                            cooldownTicks = Math.max(cooldownTicks, KCConfig.TIME_ERASE_DYNAMIC_MINIMUM_COOLDOWN.get());
+                        } else {
+                            cooldownTicks = KCConfig.TIME_ERASE_COOLDOWN.get();
+                        }
+    
+                        standPower.setCooldownTimer(this, cooldownTicks);
                     }
-
-                    standPower.setCooldownTimer(this, cooldownTicks);
                 }
             }
         }
