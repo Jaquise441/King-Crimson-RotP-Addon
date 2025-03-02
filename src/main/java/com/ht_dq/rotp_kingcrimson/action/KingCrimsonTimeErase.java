@@ -20,7 +20,6 @@ import com.ht_dq.rotp_kingcrimson.config.KCConfig;
 import com.ht_dq.rotp_kingcrimson.entity.KCAfterimageEntity;
 import com.ht_dq.rotp_kingcrimson.entity.TimeEraseDecoyEntity;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
-import com.ht_dq.rotp_kingcrimson.init.InitStands;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
 import com.ht_dq.rotp_kingcrimson.network.server.KingCrimsonDimensionChangeHandler;
 import com.ht_dq.rotp_kingcrimson.network.server.PlayerTimerActivePacket;
@@ -84,14 +83,6 @@ public class KingCrimsonTimeErase extends StandEntityAction {
     private int activeTicks = 0;
     public KingCrimsonTimeErase(Builder builder) {
         super(builder);
-    }
-    
-    /**
-     * @deprecated Temporary, just for testing.
-     */
-    @Deprecated
-    public static boolean tmpHasAfterimageDoesNotWorkOnServers(Entity entity) {
-        return ((KingCrimsonTimeErase) InitStands.KINGCRIMSON_TIMEERASE.get()).stationaryAfterimages.containsKey(entity);
     }
 
 

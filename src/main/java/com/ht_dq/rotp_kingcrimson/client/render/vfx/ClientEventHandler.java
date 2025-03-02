@@ -9,8 +9,8 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.github.standobyte.jojo.init.ModStatusEffects;
+import com.github.standobyte.jojo.power.impl.stand.StandUtil;
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
-import com.ht_dq.rotp_kingcrimson.action.KingCrimsonTimeErase;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.AfterimageRenderer;
 import com.ht_dq.rotp_kingcrimson.client.render.vfx.TemporaryDimensionEffects.DimensionEffect;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -21,7 +21,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -117,10 +116,13 @@ public class ClientEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void setRenderEntityRed(RenderLivingEvent.Pre<?, ?> event) {
-        LivingEntity entity = event.getEntity();
-        boolean isUnderTimeErase = KingCrimsonTimeErase.tmpHasAfterimageDoesNotWorkOnServers(entity);
-        if (isUnderTimeErase) {
-            AfterimageRenderer.renderLivingEntityRed = true;
+        if (isErasingTime()) {
+            LivingEntity entity = event.getEntity();
+            // technically that's true, right?
+            boolean isUnderTimeErase = !isPlayerErasingTime(StandUtil.getStandUser(entity));
+            if (isUnderTimeErase) {
+                AfterimageRenderer.renderLivingEntityRed = true;
+            }
         }
     }
 
@@ -139,7 +141,7 @@ public class ClientEventHandler {
                 mc.player.hasEffect(Effects.DIG_SLOWDOWN);
     }
     
-    public static boolean isPlayerErasingTime(PlayerEntity player) {
+    public static boolean isPlayerErasingTime(LivingEntity player) {
         return player.hasEffect(Effects.LUCK) &&
                 player.hasEffect(ModStatusEffects.FULL_INVISIBILITY.get()) &&
                 player.hasEffect(Effects.DIG_SLOWDOWN);
