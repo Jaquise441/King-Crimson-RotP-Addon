@@ -110,35 +110,25 @@ public class KingCrimsonProjectileThrow extends StandEntityLightAttack {
             ItemStack mainHandItem = player.getMainHandItem();
 
             if (!mainHandItem.isEmpty() && isThrowableItem(mainHandItem)) {
-                int itemCount = mainHandItem.getCount();
-                int projectilesToThrow = Math.min(itemCount, 3);
+                ProjectileEntity projectile = createProjectile(world, player, mainHandItem);
+                if (projectile != null) {
+                    Vector3d direction = player.getLookAngle();
+                    projectile.setPos(player.getX(), player.getEyeY(), player.getZ());
 
-                if (mainHandItem.getItem() == Items.FIRE_CHARGE) {
-                    projectilesToThrow = 1;
-                }
+                    float speed = 3.0F;
+                    projectile.shoot(direction.x, direction.y, direction.z, speed, 1.0F);
 
-                for (int i = 0; i < projectilesToThrow; i++) {
-                    ProjectileEntity projectile = createProjectile(world, player, mainHandItem);
-                    if (projectile != null) {
-                        Vector3d direction = player.getLookAngle();
-                        Vector3d offset = calculateOffset(i, projectilesToThrow, direction);
-                        projectile.setPos(player.getX() + offset.x, player.getEyeY() + offset.y, player.getZ() + offset.z);
-
-                        float speed = 3.0F;
-                        projectile.shoot(direction.x, direction.y, direction.z, speed, 1.0F);
-
-                        if (projectile instanceof PotionEntity) {
-                            ((PotionEntity) projectile).setItem(mainHandItem);
-                        }
-
-                        world.addFreshEntity(projectile);
-                    } else {
-                        System.out.println("Skill issue: " + mainHandItem.getItem().getRegistryName());
+                    if (projectile instanceof PotionEntity) {
+                        ((PotionEntity) projectile).setItem(mainHandItem);
                     }
+
+                    world.addFreshEntity(projectile);
+                } else {
+                    System.out.println("Skill issue: " + mainHandItem.getItem().getRegistryName());
                 }
 
                 if (!player.isCreative()) {
-                    mainHandItem.shrink(projectilesToThrow);
+                    mainHandItem.shrink(1);
                     if (mainHandItem.isEmpty()) {
                         player.setItemInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
                     }
@@ -194,25 +184,5 @@ public class KingCrimsonProjectileThrow extends StandEntityLightAttack {
         }
 
         return null;
-    }
-
-    private Vector3d calculateOffset(int index, int totalProjectiles, Vector3d direction) {
-        double spread = 0.2;
-        double offsetX = 0;
-        double offsetY = 0;
-        double offsetZ = 0;
-
-        if (totalProjectiles > 1) {
-            if (index == 0) {
-                offsetX = -spread;
-                offsetZ = -spread;
-            } else if (index == 1) {
-            } else if (index == 2) {
-                offsetX = spread;
-                offsetZ = spread;
-            }
-        }
-
-        return new Vector3d(offsetX, offsetY, offsetZ);
     }
 }
