@@ -23,6 +23,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -88,6 +89,19 @@ public class KingCrimsonTimeSkip extends StandEntityAction {
 
         @SubscribeEvent
         public static void onLivingAttack(LivingAttackEvent event) {
+            LivingEntity target = event.getEntityLiving();
+            if (target instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) target;
+                UUID playerId = player.getUUID();
+
+                if (activeTimeSkips.containsKey(playerId)) {
+                    event.setCanceled(true);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public static void onLivingFall(LivingFallEvent event) {
             LivingEntity target = event.getEntityLiving();
             if (target instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) target;

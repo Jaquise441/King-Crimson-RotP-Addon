@@ -14,7 +14,6 @@ import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
 import com.ht_dq.rotp_kingcrimson.action.*;
 import com.ht_dq.rotp_kingcrimson.config.KCConfig;
 import com.ht_dq.rotp_kingcrimson.entity.stand.stands.KingCrimsonEntity;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 
@@ -151,6 +150,17 @@ public class InitStands {
                     .shout(InitSounds.DOPPIO_THERE_YOU_ARE)
                     .partsRequired(StandPart.ARMS)));
 
+    public static final RegistryObject<StandEntityLightAttack> KINGCRIMSON_PROJECTILE_THROW_TRIPPLE = ACTIONS.register("kingcrimson_projectile_throw_tripple",
+            () -> new KingCrimsonProjectileThrowTripple(new StandEntityLightAttack.Builder()
+                    .standPose(KingCrimsonProjectileThrowTripple.THROW)
+                    .staminaCost(120)
+                    .standWindupDuration(85)
+                    .resolveLevelToUnlock(3)
+                    .shiftVariationOf(KINGCRIMSON_PROJECTILE_THROW)
+                    .shout(InitSounds.DOPPIO_THERE_YOU_ARE)
+                    .partsRequired(StandPart.ARMS)));
+
+
     public static final EntityStandRegistryObject<EntityStandType<StandStats>, StandEntityType<KingCrimsonEntity>> STAND_KINGCRIMSON =
             new EntityStandRegistryObject<>("kingcrimson",
                     STANDS,
@@ -168,7 +178,6 @@ public class InitStands {
                                     KINGCRIMSON_TIMESKIP.get(),
                                     KINGCRIMSON_TIMEERASE.get()
                             )
-                            .defaultKey(KINGCRIMSON_TIMEERASE.get(), "key.keyboard.c") // key V to time erase
                             .defaultStats(StandStats.class, new StandStats.Builder()
                                     .power(18.0)
                                     .speed(14.0)

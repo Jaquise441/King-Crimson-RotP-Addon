@@ -42,11 +42,12 @@ public class KingCrimsonChop extends StandEntityLightAttack {
 
     @Override
     public StandAction[] getExtraUnlockable() {
-        return new StandAction[] { InitStands.KINGCRIMSON_PROJECTILE_THROW.get() };
+        return new StandAction[] { InitStands.KINGCRIMSON_PROJECTILE_THROW.get(), InitStands.KINGCRIMSON_PROJECTILE_THROW_TRIPPLE.get() };
     }
 
     @Override
     public int getStandWindupTicks(IStandPower standPower, StandEntity standEntity) {
+        standPower.setCooldownTimer(this, KCConfig.CHOP_COOLDOWN.get());
         return StandStatFormulas.getHeavyAttackWindup(standEntity.getAttackSpeed(), standEntity.getFinisherMeter());
     }
 
@@ -70,7 +71,6 @@ public class KingCrimsonChop extends StandEntityLightAttack {
     protected void onTaskStopped(World world, StandEntity standEntity, IStandPower standPower, StandEntityTask task, StandEntityAction newAction) {
         super.onTaskStopped(world, standEntity, standPower, task, newAction);
 
-        standPower.setCooldownTimer(this, KCConfig.CHOP_COOLDOWN.get());
     }
 
 
