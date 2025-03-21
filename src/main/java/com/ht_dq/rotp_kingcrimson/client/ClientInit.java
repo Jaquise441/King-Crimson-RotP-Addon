@@ -2,6 +2,9 @@ package com.ht_dq.rotp_kingcrimson.client;
 
 import java.util.Map;
 
+import com.github.standobyte.jojo.client.ui.standstats.StandStatsRenderer;
+import com.github.standobyte.jojo.power.impl.stand.IStandPower;
+import com.github.standobyte.jojo.power.impl.stand.stats.StandStats;
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.AfterimageRenderer;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.TimeEraseDecoyRenderer;
@@ -13,6 +16,7 @@ import com.ht_dq.rotp_kingcrimson.client.render.vfx.TemporaryDimensionEffects;
 import com.ht_dq.rotp_kingcrimson.init.AddonStands;
 import com.ht_dq.rotp_kingcrimson.init.InitEntities;
 
+import com.ht_dq.rotp_kingcrimson.init.InitStands;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -46,7 +50,33 @@ public class ClientInit {
             addLayers(skinMap.get("slim"), true);
             mc.getEntityRenderDispatcher().renderers.values().forEach(ClientInit::addLayersToEntities);
         });
+        StandStatsRenderer.overrideCosmeticStats(
+                InitStands.STAND_KINGCRIMSON.getStandType().getRegistryName(),
+                new StandStatsRenderer.ICosmeticStandStats() {
+                    @Override public double statConvertedValue(StandStatsRenderer.StandStat stat, IStandPower standData, StandStats stats, float statLeveling) {
+                        switch (stat) {
+                            case RANGE:
+                            case DURABILITY:
+                                return 1;
+                            case PRECISION:
+                            case DEV_POTENTIAL:
+                                return 0;
+                            default:
+                                return StandStatsRenderer.ICosmeticStandStats.super.statConvertedValue(stat, standData, stats, statLeveling);
+                        }
+                    }
+                    @Override public String statRankLetter(StandStatsRenderer.StandStat stat, IStandPower standData, double statConvertedValue) {
+                        switch (stat) {
+                            case PRECISION:
+                            case DEV_POTENTIAL:
+                                return "?";
+                            default:
+                                return StandStatsRenderer.getRankFromConvertedValue(statConvertedValue);
+                        }
+                    }
+                });
     }
+
     private static void addLayers(PlayerRenderer renderer, boolean slim) {
         addLivingLayers(renderer);
         addBipedLayers(renderer);
