@@ -1,0 +1,40 @@
+{
+  "entity.rotp_kingcrimson.kingcrimson": "绯红之王",
+  "stand.rotp_kingcrimson.kingcrimson": "绯红之王",
+
+  "action.rotp_kingcrimson.kingcrimson_punch": "挥拳",
+  "action.rotp_kingcrimson.kingcrimson_heavy_punch": "重拳",
+  "action.rotp_kingcrimson.kingcrimson_groundpunch": "终结之拳",
+  "action.rotp_kingcrimson.kingcrimson_barrage": "连打",
+  "action.rotp_kingcrimson.kingcrimson_doppio_barrage": "连打",
+  "action.rotp_kingcrimson.kingcrimson_chop": "手刀劈砍",
+  "action.rotp_kingcrimson.kingcrimson_impale": "穿胸",
+  "action.rotp_kingcrimson.kingcrimson_groundslam": "憾地猛击",
+  "action.rotp_kingcrimson.kingcrimson_desperate_eyejab": "以血蒙眼",
+  "action.rotp_kingcrimson.kingcrimson_projectile_throw": "投掷",
+  "action.rotp_kingcrimson.kingcrimson_projectile_throw_tripple": "三重投掷",
+
+
+  "action.rotp_kingcrimson.kingcrimson_block": "防御",
+  "action.rotp_kingcrimson.kingcrimson_timeskip": "时间跳跃",
+  "action.rotp_kingcrimson.kingcrimson_epitaph": "墓志铭",
+  "action.rotp_kingcrimson.kingcrimson_timeerase": "时间删除",
+
+  "effect.rotp_kingcrimson.bleeding": "流血",
+  "effect.rotp_kingcrimson.mangled_body": "肢体损伤",
+  "effect.rotp_kingcrimson.gaping_wound": "被穿胸",
+  "effect.rotp_kingcrimson.half_blindness_left": "左眼失明",
+  "effect.rotp_kingcrimson.half_blindness_right": "右眼失明",
+
+
+
+  "jojo.message.action_condition.no_throwable_item_in_mainhand": "主手中没有可投掷物品",
+  "jojo.message.action_condition.not_throwable": "该物品不可投掷",
+  "jojo.message.action_condition.barrage_health": "生命值不足以发动连打暴",
+  "jojo.message.action_condition.barrage_health_doppio": "恐慌值未达使用连打条件",
+  "jojo.message.action_condition.molotov_flint_and_steel": "副手须持有打火石",
+  "jojo.message.action_condition.nope": " ",
+
+
+  "rotp_kingcrimson.subtitle.kingcrimson_name": "\"绯红之王\""
+}
