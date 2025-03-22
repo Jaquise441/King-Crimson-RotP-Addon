@@ -3,6 +3,8 @@ package com.ht_dq.rotp_kingcrimson.action;
 import java.util.Optional;
 import javax.annotation.Nullable;
 
+import com.github.standobyte.jojo.action.ActionTarget;
+import com.github.standobyte.jojo.action.stand.StandAction;
 import com.github.standobyte.jojo.action.stand.StandEntityAction;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectInstance;
 import com.github.standobyte.jojo.action.stand.effect.StandEffectType;
@@ -37,18 +39,18 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 
-public class KingCrimsonEpitaph extends StandEntityAction {
+public class KingCrimsonEpitaph extends StandAction {
     private static final int EFFECT_DURATION = KCConfig.EPITAPH_DURATION.get();
     private static final int SLOWNESS_LEVEL = 1;
     private static final double TELEPORT_DISTANCE = 3.0;
     private int activeTicks = 0;
 
-    public KingCrimsonEpitaph(AbstractBuilder<?> builder) {
+    public KingCrimsonEpitaph(Builder builder) {
         super(builder);
     }
 
     @Override
-    public void standTickPerform(World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
+    protected void holdTick(World world, LivingEntity user, IStandPower userPower, int ticksHeld, ActionTarget target, boolean requirementsFulfilled) {
         if (!world.isClientSide) {
             activeTicks++;
 
@@ -60,16 +62,13 @@ public class KingCrimsonEpitaph extends StandEntityAction {
             float staminaCostPerTick = KCConfig.EPITAPH_STAMINA_COST_TICK.get().floatValue();
             if (staminaCostPerTick > 0 && !userPower.consumeStamina(staminaCostPerTick)) {
                 userPower.stopHeldAction(false);
-                return;
             }
         }
     }
 
-
     @Override
-    public void standPerform(World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
+    protected void perform(World world, LivingEntity user, IStandPower userPower, ActionTarget target) {
         if (!world.isClientSide()) {
-            LivingEntity user = standEntity.getUser();
             if (user != null) {
                 applyEffects(user, true);
                 userPower.getContinuousEffects().addEffect(new EpitaphEffect());
@@ -79,16 +78,15 @@ public class KingCrimsonEpitaph extends StandEntityAction {
     }
 
     @Override
-    protected void onTaskStopped(World world, StandEntity standEntity, IStandPower standPower, StandEntityTask task, StandEntityAction newAction) {
-        LivingEntity player = standEntity.getUser();
-        if (player != null) {
-            applyEffects(player, false);
-            StandEffectsTracker.getEffectOfType(player, InitStandEffects.EPITAPH.get()).ifPresent(StandEffectInstance::remove);
+    public void stoppedHolding(World world, LivingEntity user, IStandPower power, int ticksHeld, boolean willFire) {
+        if (user != null) {
+            applyEffects(user, false);
+            StandEffectsTracker.getEffectOfType(user, InitStandEffects.EPITAPH.get()).ifPresent(StandEffectInstance::remove);
             if (world.isClientSide()) {
                 EpitaphVFX.stopEffect();
             }
 
-            standPower.setCooldownTimer(this, KCConfig.EPITAPH_COOLDOWN.get());
+            power.setCooldownTimer(this, KCConfig.EPITAPH_COOLDOWN.get());
         }
     }
 
@@ -124,9 +122,6 @@ public class KingCrimsonEpitaph extends StandEntityAction {
 
         @Override
         protected void start() {}
-
-        @Override
-        protected void tickTarget(LivingEntity target) {}
 
         @Override
         protected void tick() {

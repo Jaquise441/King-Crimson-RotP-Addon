@@ -5,17 +5,14 @@ import java.util.stream.Collectors;
 
 import com.github.standobyte.jojo.action.ActionConditionResult;
 import com.github.standobyte.jojo.action.ActionTarget;
-import com.github.standobyte.jojo.action.stand.StandEntityAction;
-import com.github.standobyte.jojo.entity.stand.StandEntity;
-import com.github.standobyte.jojo.entity.stand.StandEntityTask;
+import com.github.standobyte.jojo.action.stand.StandAction;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
+import com.github.standobyte.jojo.util.mc.MCUtil;
 import com.ht_dq.rotp_kingcrimson.client.ClientProxy;
 import com.ht_dq.rotp_kingcrimson.config.KCConfig;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.EntityTickableSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,12 +25,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 
-public class KingCrimsonTimeSkip extends StandEntityAction {
-
+public class KingCrimsonTimeSkip extends StandAction {
     private static final Random RANDOM = new Random();
     private static final Map<UUID, Integer> activeTimeSkips = new HashMap<>();
 
-    public KingCrimsonTimeSkip(StandEntityAction.Builder builder) {
+    public KingCrimsonTimeSkip(Builder builder) {
         super(builder);
     }
 
@@ -43,8 +39,7 @@ public class KingCrimsonTimeSkip extends StandEntityAction {
     }
 
     @Override
-    public void standPerform(World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
-        LivingEntity user = userPower.getUser();
+    protected void perform(World world, LivingEntity user, IStandPower userPower, ActionTarget target) {
         if (user == null) return;
 
         SoundEvent soundToPlay = RANDOM.nextBoolean()
@@ -55,19 +50,17 @@ public class KingCrimsonTimeSkip extends StandEntityAction {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
                     ClientProxy.playSound(
                             soundToPlay,
-                            standEntity.getSoundSource(),
+                            user.getSoundSource(),
                             1.0F,
                             1.0F,
-                            standEntity
+                            user
                     )
             );
         }
 
         VFXServerHelper.startVFX(user, true);
-        List<Entity> entities = world.getEntities(standEntity, standEntity.getBoundingBox().inflate(32))
-                .stream()
-                .filter(entity -> entity instanceof PlayerEntity || entity instanceof LivingEntity)
-                .collect(Collectors.toList());
+
+        List<Entity> entities = MCUtil.entitiesAround(LivingEntity.class, user, 32, true, null);
 
         int timeSkipDuration = KCConfig.TIME_SKIP_DURATION.get();
 

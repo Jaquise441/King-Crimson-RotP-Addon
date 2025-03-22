@@ -117,8 +117,8 @@ public class InitStands {
             () -> new StandEntityBlock());
 
 
-    public static final RegistryObject<StandEntityAction> KINGCRIMSON_TIMESKIP = ACTIONS.register("kingcrimson_timeskip",
-            () -> new KingCrimsonTimeSkip(new StandEntityAction.Builder()
+    public static final RegistryObject<StandAction> KINGCRIMSON_TIMESKIP = ACTIONS.register("kingcrimson_timeskip",
+            () -> new KingCrimsonTimeSkip(new StandAction.Builder()
                     .staminaCost(200)
                     .resolveLevelToUnlock(3)));
 
@@ -132,14 +132,13 @@ public class InitStands {
                     .resolveLevelToUnlock(3)
                     .partsRequired(StandPart.ARMS)));
 
-    public static final RegistryObject<StandEntityAction> KINGCRIMSON_EPITAPH = ACTIONS.register("kingcrimson_epitaph",
-            () -> new KingCrimsonEpitaph(new StandEntityAction.Builder()
-                    .holdType()
-                    .standPerformDuration(KCConfig.EPITAPH_DURATION.get())
+    public static final RegistryObject<StandAction> KINGCRIMSON_EPITAPH = ACTIONS.register("kingcrimson_epitaph",
+            () -> new KingCrimsonEpitaph(new StandAction.Builder()
+                    .holdType(KCConfig.EPITAPH_DURATION.get())
                     .staminaCost(175)
                     .resolveLevelToUnlock(1)
-                    .shout(InitSounds.DIAVOLO_EPITAPH)
-                    .standSound(InitSounds.KINGCRIMSON_EPITAPH)));
+                    .shout(InitSounds.DIAVOLO_EPITAPH)));
+//                    .standSound(InitSounds.KINGCRIMSON_EPITAPH)));
 
     public static final RegistryObject<StandEntityLightAttack> KINGCRIMSON_PROJECTILE_THROW = ACTIONS.register("kingcrimson_projectile_throw",
             () -> new KingCrimsonProjectileThrow(new StandEntityLightAttack.Builder()
