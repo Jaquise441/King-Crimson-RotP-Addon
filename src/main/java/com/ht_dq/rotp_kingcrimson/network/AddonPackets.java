@@ -1,10 +1,7 @@
 package com.ht_dq.rotp_kingcrimson.network;
 
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
-import com.ht_dq.rotp_kingcrimson.network.server.PlayerTimerActivePacket;
-import com.ht_dq.rotp_kingcrimson.network.server.RemoveTimerActivePacket;
-import com.ht_dq.rotp_kingcrimson.network.server.TimerPutPacket;
-import com.ht_dq.rotp_kingcrimson.network.server.VFXPlayerTick;
+import com.ht_dq.rotp_kingcrimson.network.server.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +30,9 @@ public class AddonPackets {
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         channel.registerMessage(packetIndex++, VFXPlayerTick.class,
                 VFXPlayerTick::encode,VFXPlayerTick::decode,VFXPlayerTick::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        channel.registerMessage(packetIndex++, RemoveEpitaphShader.class,
+                RemoveEpitaphShader::encode,RemoveEpitaphShader::decode,RemoveEpitaphShader::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         channel.registerMessage(packetIndex++, PlayerTimerActivePacket.class,
                 PlayerTimerActivePacket::encode,PlayerTimerActivePacket::decode,PlayerTimerActivePacket::handle,
