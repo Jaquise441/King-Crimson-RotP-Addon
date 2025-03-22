@@ -329,32 +329,20 @@ public class KingCrimsonEpitaph extends StandAction {
         public void onLivingAttack(LivingAttackEvent event) {
             DamageSource source = event.getSource();
             Entity attacker = source.getEntity();
+            boolean isResolveLevel3OrHigher = userPower.getResolveLevel() >= 3;
 
-            if (userPower.getResolveLevel() >= 3) {
+            if (isResolveLevel3OrHigher) {
                 if (source == DamageSource.FALL || source == DamageSource.LIGHTNING_BOLT) {
                     event.setCanceled(true);
-
                     VFXServerHelper.startVFX(user, true);
                     playSound(user, InitSounds.EPITAPH_TIMESKIP.get());
                     userPower.stopHeldAction(true);
                     this.removeAllShit();
                     return;
                 }
-            }
 
-            if (userPower.getResolveLevel() < 3) {
-                if (source == DamageSource.FALL || source == DamageSource.LIGHTNING_BOLT) {
-                    return;
-                }
+                event.setCanceled(true);
 
-                if (source.isExplosion() || (attacker instanceof MobEntity && attacker.getType().getRegistryName().toString().contains("creeper"))) {
-                    return;
-                }
-            }
-
-            event.setCanceled(true);
-
-            if (userPower.getResolveLevel() >= 3) {
                 if (userPower.consumeStamina(150)) {
                     if (attacker instanceof StandEntity && ((StandEntity) attacker).getUser() != null) {
                         handleEpitaphTeleportBehind(user, ((StandEntity) attacker).getUser());
@@ -372,11 +360,22 @@ public class KingCrimsonEpitaph extends StandAction {
                     return;
                 }
             } else {
+                if (source == DamageSource.FALL || source == DamageSource.LIGHTNING_BOLT) {
+                    return;
+                }
+
+                if (source.isExplosion() || (attacker instanceof MobEntity && attacker.getType().getRegistryName().toString().contains("creeper"))) {
+                    return;
+                }
+
+                event.setCanceled(true);
                 handleDashBackward(user, attacker);
             }
 
-            IStandPower.getPlayerStandPower((PlayerEntity) user).stopHeldAction(true);
-            this.removeAllShit();
+            if (isResolveLevel3OrHigher || userPower.getResolveLevel() < 3) {
+                userPower.stopHeldAction(true);
+                this.removeAllShit();
+            }
         }
 
         private static void applyAfterEpitaphEffect(LivingEntity target) {
