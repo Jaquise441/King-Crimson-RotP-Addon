@@ -8,6 +8,7 @@ import com.github.standobyte.jojo.power.impl.stand.stats.StandStats;
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.AfterimageRenderer;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.TimeEraseDecoyRenderer;
+import com.ht_dq.rotp_kingcrimson.client.render.entity.layerrenderer.EpitaphLayer;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.layerrenderer.HalfBlindnessLeftLayer;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.layerrenderer.HalfBlindnessRightLayer;
 import com.ht_dq.rotp_kingcrimson.client.render.entity.renderer.stand.KingCrimsonRenderer;
@@ -94,6 +95,7 @@ public class ClientInit {
     private static <T extends LivingEntity, M extends EntityModel<T>> void addLivingLayers(LivingRenderer<T, M> renderer) {
         renderer.addLayer(new HalfBlindnessLeftLayer<>(renderer));
         renderer.addLayer(new HalfBlindnessRightLayer<>(renderer));
+        renderer.addLayer(new EpitaphLayer<>(renderer));
     }
 
     private static <T extends LivingEntity, M extends BipedModel<T>> void addBipedLayers(LivingRenderer<T, M> renderer) {

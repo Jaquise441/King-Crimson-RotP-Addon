@@ -10,6 +10,7 @@ import com.github.standobyte.jojo.action.stand.effect.StandEffectType;
 import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.github.standobyte.jojo.power.impl.stand.StandEffectsTracker;
+import com.ht_dq.rotp_kingcrimson.client.ClientProxy;
 import com.ht_dq.rotp_kingcrimson.client.render.vfx.EpitaphVFX;
 import com.ht_dq.rotp_kingcrimson.config.KCConfig;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
@@ -35,8 +36,10 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
@@ -45,6 +48,7 @@ public class KingCrimsonEpitaph extends StandAction {
     private static final int EFFECT_DURATION = KCConfig.EPITAPH_DURATION.get();
     private static final int SLOWNESS_LEVEL = 1;
     private static final double TELEPORT_DISTANCE = 3.0;
+    private static boolean soundPlayed = false;
 
     public KingCrimsonEpitaph(Builder builder) {
         super(builder);
@@ -59,6 +63,21 @@ public class KingCrimsonEpitaph extends StandAction {
                     userPower.getContinuousEffects().addEffect(new EpitaphEffect());
                 }
             }
+
+            if (!soundPlayed) {
+                if (world.isClientSide()) {
+                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                            ClientProxy.playSound(
+                                    InitSounds.KINGCRIMSON_EPITAPH.get(),
+                                    user.getSoundSource(),
+                                    1.0F,
+                                    1.0F,
+                                    user
+                            )
+                    );
+                }
+                soundPlayed = true;
+            }
         }
     }
 
@@ -67,6 +86,7 @@ public class KingCrimsonEpitaph extends StandAction {
             applyEffects(user, false);
             StandEffectsTracker.getEffectOfType(user, InitStandEffects.EPITAPH.get()).ifPresent(StandEffectInstance::remove);
             power.setCooldownTimer(InitStands.KINGCRIMSON_EPITAPH.get(), KCConfig.EPITAPH_COOLDOWN.get());
+            soundPlayed = false;
         }
     }
 

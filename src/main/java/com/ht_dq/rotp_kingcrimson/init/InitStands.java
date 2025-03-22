@@ -75,7 +75,7 @@ public class InitStands {
 
     public static final RegistryObject<StandEntityLightAttack> KINGCRIMSON_IMPALE = ACTIONS.register("kingcrimson_impale",
             () -> new KingCrimsonImpale(new StandEntityLightAttack.Builder()
-                    .staminaCost(150)
+                    .staminaCost(200)
                     .resolveLevelToUnlock(4)
                     .standPose(KingCrimsonImpale.IMPALE)
                     .autoSummonStand()
@@ -119,7 +119,7 @@ public class InitStands {
 
     public static final RegistryObject<StandAction> KINGCRIMSON_TIMESKIP = ACTIONS.register("kingcrimson_timeskip",
             () -> new KingCrimsonTimeSkip(new StandAction.Builder()
-                    .staminaCost(200)
+                    .staminaCost(400)
                     .resolveLevelToUnlock(3)));
 
     public static final RegistryObject<StandEntityAction> KINGCRIMSON_TIMEERASE = ACTIONS.register("kingcrimson_timeerase",
@@ -127,7 +127,7 @@ public class InitStands {
                     .holdType()
                     .standPerformDuration(KCConfig.TIME_ERASE_DURATION.get())
                     .standUserWalkSpeed(2F)
-                    .staminaCost(150)
+                    .staminaCost(250)
                     .shout(InitSounds.KINGCRIMSON_TIMEERASE)
                     .resolveLevelToUnlock(3)
                     .partsRequired(StandPart.ARMS)));

@@ -26,6 +26,7 @@ public class KCConfig {
     public static final ForgeConfigSpec.IntValue EPITAPH_DURATION;
     public static final ForgeConfigSpec.DoubleValue EPITAPH_STAMINA_COST_TICK;
     public static final ForgeConfigSpec.IntValue EPITAPH_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue IMPALE_GAPING_WOUND_LEVEL;
 
     static {
         BUILDER.push("King Crimson Barrage Config");
@@ -56,6 +57,9 @@ public class KCConfig {
         IMPALE_COOLDOWN = BUILDER
                 .comment("The cooldown (in ticks) for King Crimson's Impale. (Default is 180 ticks = 9 seconds)")
                 .defineInRange("impaleCooldown", 180, 0, 12000);
+        IMPALE_GAPING_WOUND_LEVEL = BUILDER
+                .comment("The level of Gaping Wound applied by Impale (0 = level 1, 1 = level 2, etc...) (Previous Version's Gaping Wound: 3 = level 4)")
+                .defineInRange("impaleGapingWoundLevel", 0, -1, 9);
         BUILDER.pop();
 
         BUILDER.push("King Crimson Projectile Throw Config");

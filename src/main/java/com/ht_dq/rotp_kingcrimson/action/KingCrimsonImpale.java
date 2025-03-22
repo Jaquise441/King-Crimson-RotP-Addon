@@ -68,15 +68,15 @@ public class KingCrimsonImpale extends StandEntityLightAttack {
         protected void afterAttack(StandEntity stand, Entity target, StandEntityDamageSource dmgSource, StandEntityTask task, boolean hurt, boolean killed) {
             super.afterAttack(stand, target, dmgSource, task, hurt, killed);
 
-            if (hurt && target instanceof LivingEntity) {
+            if (hurt && target instanceof LivingEntity && !(target instanceof StandEntity)) {
                 LivingEntity livingTarget = (LivingEntity) target;
+
+                int gapingWoundLevel = KCConfig.IMPALE_GAPING_WOUND_LEVEL.get();
+                livingTarget.addEffect(new EffectInstance(InitEffects.GAPING_WOUND.get(), 140, gapingWoundLevel, false, false));
 
                 livingTarget.addEffect(new EffectInstance(InitEffects.BLEEDING.get(), 140, 0, false, false));
                 livingTarget.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, 140, 3, false, false));
                 livingTarget.addEffect(new EffectInstance(Effects.WEAKNESS, 140, 2, false, false));
-                livingTarget.addEffect(new EffectInstance(InitEffects.GAPING_WOUND.get(), 140, 3, false, false));
-
-
             }
             IStandPower standPower = stand.getUserPower();
             if (standPower != null) {
