@@ -789,6 +789,19 @@ public class KingCrimsonModel extends HumanoidStandModel<KingCrimsonEntity> {
 						.build(idlePose))
 				.build(idlePose));
 
+		actionAnim.put(KingCrimsonProjectileThrowTripple.THROW, new PosedActionAnimation.Builder<KingCrimsonEntity>()
+				.addPose(StandEntityAction.Phase.WINDUP, new ModelPoseTransitionMultiple.Builder<>(idlePose)
+						.addPose(0.0F, throw0)
+						.addPose(0.08F, throw1)
+						.addPose(0.54F, throw2)
+						.addPose(0.63F, throw3)
+						.addPose(0.72F, throw4)
+						.build(throw5))
+				.addPose(StandEntityAction.Phase.RECOVERY, new ModelPoseTransitionMultiple.Builder<>(throw5)
+						.addPose(0.84F, throw5)
+						.build(idlePose))
+				.build(idlePose));
+		
 		ModelPose<KingCrimsonEntity> eyejab0 = new ModelPose<>(new RotationAngle[]{
 				RotationAngle.fromDegrees(head, 0, 0, 0),
 				RotationAngle.fromDegrees(body, 0, 0, 0),
