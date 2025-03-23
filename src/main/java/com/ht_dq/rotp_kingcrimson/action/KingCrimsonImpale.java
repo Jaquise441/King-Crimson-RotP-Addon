@@ -31,6 +31,7 @@ public class KingCrimsonImpale extends StandEntityLightAttack {
 
     @Override
     public int getStandWindupTicks(IStandPower standPower, StandEntity standEntity) {
+        standPower.setCooldownTimer(this, KCConfig.IMPALE_COOLDOWN.get());        
         return StandStatFormulas.getHeavyAttackWindup(standEntity.getAttackSpeed(), standEntity.getFinisherMeter());
     }
 
@@ -54,8 +55,6 @@ public class KingCrimsonImpale extends StandEntityLightAttack {
     @Override
     protected void onTaskStopped(World world, StandEntity standEntity, IStandPower standPower, StandEntityTask task, StandEntityAction newAction) {
         super.onTaskStopped(world, standEntity, standPower, task, newAction);
-
-        standPower.setCooldownTimer(this, KCConfig.IMPALE_COOLDOWN.get());
     }
 
     public static class KingcrimsonImpaleInstance extends LightPunchInstance {
