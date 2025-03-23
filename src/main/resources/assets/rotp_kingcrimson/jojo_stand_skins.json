@@ -1,9 +1,5 @@
 {
   "skins": {
-    "rotp_kingcrimson": {
-      "stand_type": "rotp_kingcrimson:kingcrimson",
-      "color" : "0xD90F13"
-    },
     "rotp_kingcrimson:skina": {
       "stand_type": "rotp_kingcrimson:kingcrimson",
       "color" : "0xCF2F50"
@@ -47,6 +43,22 @@
     "rotp_kingcrimson:skink": {
       "stand_type": "rotp_kingcrimson:kingcrimson",
       "color" : "0x0F75D9"
+    },
+    "rotp_kingcrimson:skinl": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0x4c2A2B"
+    },
+    "rotp_kingcrimson:skinm": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xECF173"
+    },
+    "rotp_kingcrimson:skinn": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0xB20000"
+    },
+    "rotp_kingcrimson:skino": {
+      "stand_type": "rotp_kingcrimson:kingcrimson",
+      "color" : "0x5A00AE"
     }
   }
 }
