@@ -2,7 +2,6 @@ package com.ht_dq.rotp_kingcrimson.client.render.vfx;
 
 import com.ht_dq.rotp_kingcrimson.RotpKingCrimsonAddon;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.util.ResourceLocation;
@@ -37,10 +36,7 @@ public class EpitaphVFX {
     }
 
     public static void onShaderTick() {
-        if (!enabled) {
-            shutdownShader();
-            return;
-        }
+        if (!enabled) return;
         if (oldF5Mode != mc.options.getCameraType()) {
             setIsShaderLoaded(false);
         }
