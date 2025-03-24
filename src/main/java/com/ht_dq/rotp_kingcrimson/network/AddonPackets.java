@@ -31,6 +31,9 @@ public class AddonPackets {
         channel.registerMessage(packetIndex++, VFXPlayerTick.class,
                 VFXPlayerTick::encode,VFXPlayerTick::decode,VFXPlayerTick::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        channel.registerMessage(packetIndex++, ActivateEpitaphShader.class,
+                ActivateEpitaphShader::encode, ActivateEpitaphShader::decode, ActivateEpitaphShader::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT));
         channel.registerMessage(packetIndex++, RemoveEpitaphShader.class,
                 RemoveEpitaphShader::encode,RemoveEpitaphShader::decode,RemoveEpitaphShader::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));

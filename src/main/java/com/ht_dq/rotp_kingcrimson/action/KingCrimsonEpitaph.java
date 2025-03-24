@@ -11,14 +11,13 @@ import com.github.standobyte.jojo.entity.stand.StandEntity;
 import com.github.standobyte.jojo.power.impl.stand.IStandPower;
 import com.github.standobyte.jojo.power.impl.stand.StandEffectsTracker;
 import com.ht_dq.rotp_kingcrimson.client.ClientProxy;
-import com.ht_dq.rotp_kingcrimson.client.render.vfx.EpitaphVFX;
 import com.ht_dq.rotp_kingcrimson.config.KCConfig;
 import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.init.InitStandEffects;
 import com.ht_dq.rotp_kingcrimson.init.InitStands;
 import com.ht_dq.rotp_kingcrimson.network.AddonPackets;
+import com.ht_dq.rotp_kingcrimson.network.server.ActivateEpitaphShader;
 import com.ht_dq.rotp_kingcrimson.network.server.RemoveEpitaphShader;
-import com.ht_dq.rotp_kingcrimson.util.KingCrimsonUtil;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 
 import net.minecraft.command.arguments.EntityAnchorArgument;
@@ -123,10 +122,8 @@ public class KingCrimsonEpitaph extends StandAction {
 
         @Override
         protected void tick() {
-            if (user.level.isClientSide) {
-                if (!EpitaphVFX.isEnabled()) {
-                    EpitaphVFX.enableShader(KingCrimsonUtil.getShader(userPower));
-                }
+            if (!user.level.isClientSide() && user instanceof ServerPlayerEntity) {
+                AddonPackets.sendToClient(new ActivateEpitaphShader(user.getId()), (ServerPlayerEntity) user);
             }
             IStandPower power = this.getUserPower();
             if (power.getHeldAction() != InitStands.KINGCRIMSON_EPITAPH.get()) {
