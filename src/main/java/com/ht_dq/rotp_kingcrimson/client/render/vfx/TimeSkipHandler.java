@@ -16,13 +16,14 @@ import net.minecraftforge.fml.common.Mod;
 public class TimeSkipHandler {
     public static final Map<PlayerEntity, Long> startTimeMap = new HashMap<>();
     public static final int EFFECT_DURATION = 375;
-    
+
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         PlayerEntity player = event.player;
-        if (startTimeMap.containsKey(player)) {
+        Long startTime = startTimeMap.get(player);
+
+        if (startTime != null) {
             long currentTime = System.currentTimeMillis();
-            long startTime = startTimeMap.get(player);
             long elapsedTime = currentTime - startTime;
 
             if (elapsedTime >= EFFECT_DURATION) {
@@ -36,11 +37,25 @@ public class TimeSkipHandler {
     }
 
     public static long getRemainingTime(PlayerEntity player) {
-        if (!startTimeMap.containsKey(player)) return 0;
+        Long startTime = startTimeMap.get(player);
+
+        if (startTime == null) {
+            return 0;
+        }
+
         long currentTime = System.currentTimeMillis();
-        long startTime = startTimeMap.get(player);
         long elapsedTime = currentTime - startTime;
+
         return Math.max(0, EFFECT_DURATION - elapsedTime);
     }
-    
+
+    public static void startEffect(PlayerEntity player) {
+        if (!isEffectActive(player)) {
+            startTimeMap.put(player, System.currentTimeMillis());
+        }
+    }
+
+    public static void stopEffect(PlayerEntity player) {
+        startTimeMap.remove(player);
+    }
 }
