@@ -13,6 +13,7 @@ import com.ht_dq.rotp_kingcrimson.init.InitSounds;
 import com.ht_dq.rotp_kingcrimson.util.VFXServerHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -61,6 +62,11 @@ public class KingCrimsonTimeSkip extends StandAction implements IPlayerAction<Ki
                 .stream()
                 .filter(entity -> entity instanceof Entity)
                 .collect(Collectors.toList());
+        entities.add(user);
+
+        List<Entity> players = entities.stream().filter(e -> e instanceof PlayerEntity).collect(Collectors.toList());
+
+        System.out.println("Client: " + world.isClientSide() + ", Entities: " + entities.size() + ", Players: " + players.size());
 
         int timeSkipDuration = KCConfig.TIME_SKIP_DURATION.get();
 
